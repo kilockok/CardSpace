@@ -8,40 +8,42 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Styling;
+using PersonalCardDemo.ViewModels;
 
-namespace PersonalCardDemo;
+namespace PersonalCardDemo.Views;
 
-public partial class MainWindow : Window
+public partial class FluentWindow : Window
 {
     private bool _isDarkTheme;
 
-    public MainWindow()
+    public FluentWindow(bool isDark)
     {
+        _isDarkTheme = isDark;
         InitializeComponent();
     }
+
+    // 需要无参构造供 AXAML 设计器使用
+    public FluentWindow() : this(false) { }
 
     protected override async void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
+        UpdateThemeIcon();
         await PlayEntranceAsync();
     }
 
-    // 利用 Transition 属性实现入场动画，只需设置目标值
     private async Task PlayEntranceAsync()
     {
         var cards = new Border[] { ProfileCard, MapCard, TechCard, PhilosophyCard };
 
-        // 初始状态：透明 + 下移
         foreach (var card in cards)
         {
             card.Opacity = 0;
             card.RenderTransform = new TranslateTransform(0, 20);
         }
 
-        // 等待布局完成
         await Task.Delay(80);
 
-        // 依次触发，Transition 会自动平滑过渡
         foreach (var card in cards)
         {
             card.Opacity = 1;
@@ -50,83 +52,57 @@ public partial class MainWindow : Window
         }
     }
 
-    // 窗口任意位置拖拽移动
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-
         if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-        {
             BeginMoveDrag(e);
-        }
     }
 
-    // 主题切换
     private void ThemeToggle_Click(object? sender, RoutedEventArgs e)
     {
         _isDarkTheme = !_isDarkTheme;
-
         if (Application.Current is { } app)
-        {
-            app.RequestedThemeVariant = _isDarkTheme
-                ? ThemeVariant.Dark
-                : ThemeVariant.Light;
-        }
-
+            app.RequestedThemeVariant = _isDarkTheme ? ThemeVariant.Dark : ThemeVariant.Light;
         UpdateThemeIcon();
     }
 
     private void UpdateThemeIcon()
     {
         if (ThemeToggleIcon is null) return;
-
         var key = _isDarkTheme ? "SunIcon" : "MoonIcon";
         if (this.TryFindResource(key, out var resource) && resource is StreamGeometry geometry)
-        {
             ThemeToggleIcon.Data = geometry;
-        }
     }
 
-    private void CloseButton_Click(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
+    private void CloseButton_Click(object? sender, RoutedEventArgs e) => Close();
 
     private void MinimizeButton_Click(object? sender, RoutedEventArgs e)
-    {
-        WindowState = WindowState.Minimized;
-    }
+        => WindowState = WindowState.Minimized;
 
     private void MaximizeButton_Click(object? sender, RoutedEventArgs e)
-    {
-        WindowState = WindowState == WindowState.Maximized
-            ? WindowState.Normal
-            : WindowState.Maximized;
-    }
+        => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
 
     private void XButton_Click(object? sender, RoutedEventArgs e)
     {
-        OpenUrl("https://x.com/kilock_1208");
+        if (DataContext is CardViewModel vm)
+            OpenUrl(vm.XUrl);
     }
 
     private void GitHubButton_Click(object? sender, RoutedEventArgs e)
     {
-        OpenUrl("https://github.com/kilockok");
+        if (DataContext is CardViewModel vm)
+            OpenUrl(vm.GitHubUrl);
     }
 
     private static void OpenUrl(string url)
     {
+        if (string.IsNullOrEmpty(url)) return;
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
             Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-        }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
             Process.Start("open", url);
-        }
         else
-        {
             Process.Start("xdg-open", url);
-        }
     }
 }

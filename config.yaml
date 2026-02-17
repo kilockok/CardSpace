@@ -1,0 +1,61 @@
+# 风格: fluent | glass
+style: glass
+
+# 主题: light | dark (仅 fluent 风格支持切换，glass 固定暗色)
+theme: light
+
+# 个人信息
+profile:
+  name: "Kilock"
+  id: "@kilock_1208"
+  avatar_fallback: "K"
+  signature: "清凤凤凤凤凤!"
+  tags:
+    - "Dev"
+    - "INTP"
+    - "Mtx"
+
+# 地点
+location:
+  city: "浙江 · 宁波"
+  description: "qwqwqwq!"
+
+# 社交链接
+social:
+  x: "https://x.com/kilock_1208"
+  github: "https://github.com/kilockok"
+
+# 技术栈 (name + icon 对应内置图标 key)
+tech_stack:
+  - name: "C++"
+    icon: "CppIcon"
+    color: "#00599C"
+  - name: "Python"
+    icon: "PythonIcon"
+    color: "#3776AB"
+  - name: "HTML5"
+    icon: "Html5Icon"
+    color: "#E34F26"
+  - name: "Vue"
+    icon: "VueIcon"
+    color: "#42B883"
+  - name: "Node.js"
+    icon: "NodeJsIcon"
+    color: "#339933"
+  - name: "Docker"
+    icon: "DockerIcon"
+    color: "#2496ED"
+
+# 链接展示
+links:
+  - icon: "GitHubIcon"
+    text: "github.com/kilockok"
+  - icon: "BlogIcon"
+    text: "清凤.fun"
+
+# 理念
+philosophy:
+  title: "Our Philosophy"
+  quotes:
+    - "活下去，去做更多、更优秀的作品"
+  attribution: "以及陪着清凤"

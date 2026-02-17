@@ -1,0 +1,62 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Glass 风格固定暗色调，不使用 ThemeDictionaries -->
+  <SolidColorBrush x:Key="GlassCardBorder" Color="#30FFFFFF"/>
+  <SolidColorBrush x:Key="GlassTagBackground" Color="#18FFFFFF"/>
+  <SolidColorBrush x:Key="GlassTagForeground" Color="#EEFFFFFF"/>
+  <SolidColorBrush x:Key="GlassSocialBackground" Color="#15FFFFFF"/>
+  <SolidColorBrush x:Key="GlassSocialHoverBackground" Color="#25FFFFFF"/>
+  <SolidColorBrush x:Key="GlassTechItemBackground" Color="#10FFFFFF"/>
+  <SolidColorBrush x:Key="GlassTextPrimary" Color="White"/>
+  <SolidColorBrush x:Key="GlassTextSecondary" Color="#DDFFFFFF"/>
+  <SolidColorBrush x:Key="GlassTextTertiary" Color="#BBFFFFFF"/>
+  <SolidColorBrush x:Key="GlassTitleForeground" Color="#88FFFFFF"/>
+  <SolidColorBrush x:Key="GlassAvatarBorder" Color="#40FFFFFF"/>
+  <SolidColorBrush x:Key="GlassLocationForeground" Color="#EF4444"/>
+  <SolidColorBrush x:Key="GlassAccentBrush" Color="#60A5FA"/>
+  <SolidColorBrush x:Key="GlassTechText" Color="#EEFFFFFF"/>
+  <SolidColorBrush x:Key="GlassLinkForeground" Color="#BBFFFFFF"/>
+
+  <!-- 封面渐变 -->
+  <LinearGradientBrush x:Key="GlassCoverGradient" StartPoint="0,0" EndPoint="1,1">
+    <GradientStop Color="#3A1C71" Offset="0"/>
+    <GradientStop Color="#D76D77" Offset="0.5"/>
+    <GradientStop Color="#FFAF7B" Offset="1"/>
+  </LinearGradientBrush>
+
+  <!-- 头像渐变 -->
+  <LinearGradientBrush x:Key="GlassAvatarGradient" StartPoint="0,0" EndPoint="1,1">
+    <GradientStop Color="#7C3AED" Offset="0"/>
+    <GradientStop Color="#EC4899" Offset="1"/>
+  </LinearGradientBrush>
+
+  <!-- 地图渐变 -->
+  <LinearGradientBrush x:Key="GlassMapGradient" StartPoint="0,0" EndPoint="1,1">
+    <GradientStop Color="#0F2027" Offset="0"/>
+    <GradientStop Color="#203A43" Offset="0.5"/>
+    <GradientStop Color="#2C5364" Offset="1"/>
+  </LinearGradientBrush>
+
+  <!-- 背景渐变 -->
+  <LinearGradientBrush x:Key="GlassBackgroundGradient" StartPoint="0,0" EndPoint="1,1">
+    <GradientStop Color="#0D1a0533" Offset="0"/>
+    <GradientStop Color="#0D4a2c8a" Offset="0.4"/>
+    <GradientStop Color="#0Dc75b39" Offset="0.7"/>
+    <GradientStop Color="#0D1a3a4a" Offset="1"/>
+  </LinearGradientBrush>
+
+  <!-- 卡片玻璃渐变 -->
+  <LinearGradientBrush x:Key="GlassCardGradient" StartPoint="0%,0%" EndPoint="0%,100%">
+    <GradientStop Color="#0CFFFFFF" Offset="0"/>
+    <GradientStop Color="#04FFFFFF" Offset="0.3"/>
+    <GradientStop Color="#00FFFFFF" Offset="1"/>
+  </LinearGradientBrush>
+
+  <!-- 地图底部叠加渐变 -->
+  <LinearGradientBrush x:Key="GlassMapOverlayGradient" StartPoint="0%,0%" EndPoint="0%,100%">
+    <GradientStop Color="#00000000" Offset="0"/>
+    <GradientStop Color="#AA000000" Offset="1"/>
+  </LinearGradientBrush>
+
+</ResourceDictionary>

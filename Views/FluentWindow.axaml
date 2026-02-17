@@ -1,0 +1,435 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:conv="clr-namespace:PersonalCardDemo.Converters"
+        xmlns:config="clr-namespace:PersonalCardDemo.Config"
+        x:Class="PersonalCardDemo.Views.FluentWindow"
+        x:DataType="vm:CardViewModel"
+        xmlns:vm="clr-namespace:PersonalCardDemo.ViewModels"
+        Width="960" Height="680"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        Background="Transparent"
+        SystemDecorations="None">
+
+  <Window.Resources>
+    <conv:IconKeyConverter x:Key="IconKeyConverter"/>
+    <conv:ColorStringConverter x:Key="ColorStringConverter"/>
+  </Window.Resources>
+
+  <Window.Styles>
+
+    <Style Selector="TextBlock">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="0:0:0.25"/>
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="PathIcon">
+      <Setter Property="VerticalAlignment" Value="Center"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="0:0:0.25"/>
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="Button.win-caption">
+      <Setter Property="Width" Value="46"/>
+      <Setter Property="Height" Value="32"/>
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1"/>
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="Button.win-caption:pointerover">
+      <Setter Property="Background" Value="{DynamicResource CaptionHover}"/>
+    </Style>
+    <Style Selector="Button.win-caption:pressed">
+      <Setter Property="Background" Value="{DynamicResource CaptionPressed}"/>
+    </Style>
+    <Style Selector="Button.win-caption-close:pointerover">
+      <Setter Property="Background" Value="#E81123"/>
+    </Style>
+    <Style Selector="Button.win-caption-close:pointerover TextBlock">
+      <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.win-caption-close:pressed">
+      <Setter Property="Background" Value="#F1707A"/>
+    </Style>
+    <Style Selector="Button.win-caption TextBlock">
+      <Setter Property="FontSize" Value="10"/>
+      <Setter Property="Foreground" Value="{DynamicResource CaptionForeground}"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style Selector="Border.tag">
+      <Setter Property="Background" Value="{DynamicResource TagBackground}"/>
+      <Setter Property="CornerRadius" Value="4"/>
+      <Setter Property="Padding" Value="12,5"/>
+      <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+      <Setter Property="RenderTransform" Value="scale(1,1)"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15"/>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Border.tag:pointerover">
+      <Setter Property="Background" Value="{DynamicResource TagHoverBackground}"/>
+      <Setter Property="RenderTransform" Value="scale(1.05,1.05)"/>
+    </Style>
+    <Style Selector="Border.tag TextBlock">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="Foreground" Value="{DynamicResource TagForeground}"/>
+    </Style>
+
+    <Style Selector="Button.social">
+      <Setter Property="Width" Value="40"/>
+      <Setter Property="Height" Value="40"/>
+      <Setter Property="CornerRadius" Value="20"/>
+      <Setter Property="Background" Value="{DynamicResource SocialBackground}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource SocialBorder}"/>
+      <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+      <Setter Property="RenderTransform" Value="scale(1,1)"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+          <BrushTransition Property="Background" Duration="0:0:0.15"/>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.social:pointerover">
+      <Setter Property="Background" Value="{DynamicResource SocialHoverBackground}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource SocialHoverBorder}"/>
+      <Setter Property="RenderTransform" Value="scale(1.08,1.08)"/>
+    </Style>
+    <Style Selector="Button.social:pressed">
+      <Setter Property="Background" Value="{DynamicResource SocialPressedBackground}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource SocialPressedBorder}"/>
+      <Setter Property="RenderTransform" Value="scale(0.96,0.96)"/>
+    </Style>
+
+    <Style Selector="Border.tech-item">
+      <Setter Property="Background" Value="{DynamicResource TechItemBackground}"/>
+      <Setter Property="CornerRadius" Value="4"/>
+      <Setter Property="Padding" Value="10,6"/>
+      <Setter Property="Margin" Value="0,0,0,6"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource TechItemBorder}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+      <Setter Property="RenderTransform" Value="scale(1,1) translateY(0)"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15"/>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Border.tech-item:pointerover">
+      <Setter Property="Background" Value="{DynamicResource TechItemHoverBackground}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource TechItemHoverBorder}"/>
+      <Setter Property="RenderTransform" Value="scale(1.04,1.04) translateY(-1px)"/>
+    </Style>
+
+    <Style Selector="Border.fluent-card">
+      <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource CardBorder}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="ClipToBounds" Value="True"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.25"/>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.35" Easing="CubicEaseOut"/>
+        </Transitions>
+      </Setter>
+    </Style>
+
+  </Window.Styles>
+
+  <Border CornerRadius="8" ClipToBounds="True"
+          Background="{DynamicResource WindowBackground}"
+          BorderBrush="{DynamicResource WindowBorder}"
+          BorderThickness="1">
+    <Border.Transitions>
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.25"/>
+        <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+      </Transitions>
+    </Border.Transitions>
+
+    <Grid RowDefinitions="32,*">
+
+      <!-- 标题栏 -->
+      <Border Grid.Row="0"
+              Background="{DynamicResource TitleBarBackground}"
+              BorderBrush="{DynamicResource TitleBarBorder}"
+              BorderThickness="0,0,0,1">
+        <Border.Transitions>
+          <Transitions>
+            <BrushTransition Property="Background" Duration="0:0:0.25"/>
+            <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+          </Transitions>
+        </Border.Transitions>
+        <Grid>
+          <StackPanel Orientation="Horizontal" Spacing="10"
+                      Margin="16,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
+            <Border Width="18" Height="18" CornerRadius="4"
+                    Background="{DynamicResource LogoGradientBrush}">
+              <TextBlock Text="C" FontSize="10" FontWeight="Bold"
+                         Foreground="{DynamicResource TextOnAccent}"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="CardSpace" FontSize="12" FontWeight="SemiBold"
+                       Foreground="{DynamicResource TitleBarForeground}"
+                       VerticalAlignment="Center"/>
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button Classes="win-caption" Click="ThemeToggle_Click"
+                    x:Name="ThemeToggleButton" ToolTip.Tip="切换主题">
+              <PathIcon x:Name="ThemeToggleIcon"
+                        Data="{StaticResource MoonIcon}"
+                        Foreground="{DynamicResource ThemeToggleForeground}"
+                        Width="14" Height="14"/>
+            </Button>
+            <Button Classes="win-caption" Click="MinimizeButton_Click">
+              <TextBlock Text="&#x2014;"/>
+            </Button>
+            <Button Classes="win-caption" Click="MaximizeButton_Click">
+              <TextBlock Text="&#x25A1;"/>
+            </Button>
+            <Button Classes="win-caption win-caption-close" Click="CloseButton_Click">
+              <TextBlock Text="&#x2715;"/>
+            </Button>
+          </StackPanel>
+        </Grid>
+      </Border>
+
+      <!-- 主内容 -->
+      <Grid Grid.Row="1" Margin="20,8,20,20"
+            ColumnDefinitions="300,*" RowDefinitions="*,210"
+            ColumnSpacing="16" RowSpacing="16">
+
+        <!-- 左侧资料卡 -->
+        <Border x:Name="ProfileCard" Grid.RowSpan="2" Classes="fluent-card" Opacity="0">
+          <Border.Effect>
+            <DropShadowEffect OffsetX="0" OffsetY="2" BlurRadius="8" Color="#000000" Opacity="0.06"/>
+          </Border.Effect>
+          <Grid RowDefinitions="170,Auto,*">
+            <Panel Grid.Row="0">
+              <Border Background="{DynamicResource CoverGradientBrush}"/>
+              <Image Source="avares://PersonalCardDemo/Assets/cover.jpg" Stretch="UniformToFill"/>
+            </Panel>
+
+            <Border Grid.Row="1" Width="96" Height="96" CornerRadius="48"
+                    HorizontalAlignment="Center" Margin="0,-48,0,0"
+                    BorderThickness="4" BorderBrush="{DynamicResource AvatarBorder}" ClipToBounds="True">
+              <Border.Effect>
+                <DropShadowEffect OffsetX="0" OffsetY="2" BlurRadius="8" Color="#000000" Opacity="0.12"/>
+              </Border.Effect>
+              <Panel>
+                <Border CornerRadius="44" Background="{DynamicResource AvatarFallbackBackground}">
+                  <TextBlock Text="{Binding AvatarFallback}" FontSize="36" FontWeight="SemiBold"
+                             Foreground="{DynamicResource TextOnAccent}"
+                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <Border CornerRadius="44" ClipToBounds="True">
+                  <Image Source="avares://PersonalCardDemo/Assets/avatar.png" Stretch="UniformToFill"/>
+                </Border>
+              </Panel>
+            </Border>
+
+            <StackPanel Grid.Row="2" Spacing="14" Margin="24,6,24,24">
+              <StackPanel Spacing="2" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding Name}" FontSize="22" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextPrimary}" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Id}" FontSize="13"
+                           Foreground="{DynamicResource TextTertiary}" HorizontalAlignment="Center"/>
+              </StackPanel>
+
+              <!-- 标签 -->
+              <ItemsControl ItemsSource="{Binding Tags}" HorizontalAlignment="Center">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel HorizontalAlignment="Center" ItemSpacing="8"/>
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="x:String">
+                    <Border Classes="tag">
+                      <TextBlock Text="{Binding}"/>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <Border Height="1" Background="{DynamicResource Separator}" Margin="8,2">
+                <Border.Transitions>
+                  <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                  </Transitions>
+                </Border.Transitions>
+              </Border>
+
+              <TextBlock Text="{Binding Signature}" FontStyle="Italic" FontSize="13"
+                         Foreground="{DynamicResource TextSecondary}" TextAlignment="Center"/>
+
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                          Spacing="12" Margin="0,2,0,0">
+                <Button Classes="social" Click="XButton_Click">
+                  <PathIcon Data="{StaticResource XIcon}"
+                            Foreground="{DynamicResource SocialIconForeground}" Width="16" Height="16"/>
+                </Button>
+                <Button Classes="social" Click="GitHubButton_Click">
+                  <PathIcon Data="{StaticResource GitHubIcon}"
+                            Foreground="{DynamicResource SocialIconForeground}" Width="16" Height="16"/>
+                </Button>
+              </StackPanel>
+            </StackPanel>
+          </Grid>
+        </Border>
+
+        <!-- 右上: 地图卡 -->
+        <Border x:Name="MapCard" Grid.Column="1" Grid.Row="0" Classes="fluent-card" Opacity="0">
+          <Border.Effect>
+            <DropShadowEffect OffsetX="0" OffsetY="2" BlurRadius="8" Color="#000000" Opacity="0.06"/>
+          </Border.Effect>
+          <Grid>
+            <Border Background="{DynamicResource MapGradientBrush}"/>
+            <Image Source="avares://PersonalCardDemo/Assets/map.png" Stretch="UniformToFill"/>
+            <Border VerticalAlignment="Bottom" Padding="20,14"
+                    Background="{DynamicResource MapOverlayBackground}"
+                    BorderBrush="{DynamicResource MapOverlayBorder}"
+                    BorderThickness="0,1,0,0" CornerRadius="0,0,8,8">
+              <Border.Transitions>
+                <Transitions>
+                  <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                  <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+                </Transitions>
+              </Border.Transitions>
+              <StackPanel Spacing="4">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <PathIcon Data="{StaticResource LocationIcon}"
+                            Foreground="{DynamicResource LocationIconForeground}" Width="18" Height="18"/>
+                  <TextBlock Text="{Binding City}" FontSize="16" FontWeight="SemiBold"
+                             Foreground="{DynamicResource TextPrimary}"/>
+                </StackPanel>
+                <TextBlock Text="{Binding LocationDescription}" FontSize="13"
+                           Foreground="{DynamicResource TextSecondary}" Margin="26,0,0,0"/>
+              </StackPanel>
+            </Border>
+          </Grid>
+        </Border>
+
+        <!-- 右下 -->
+        <Grid Grid.Column="1" Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="16">
+
+          <!-- 技术栈卡 -->
+          <Border x:Name="TechCard" Grid.Column="0" Classes="fluent-card" Opacity="0">
+            <Border.Effect>
+              <DropShadowEffect OffsetX="0" OffsetY="2" BlurRadius="8" Color="#000000" Opacity="0.06"/>
+            </Border.Effect>
+            <StackPanel Margin="16,12" Spacing="8">
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <PathIcon Data="{StaticResource CodeIcon}"
+                          Foreground="{DynamicResource AccentBrush}" Width="14" Height="14"/>
+                <TextBlock Text="Tech Stack" FontSize="14" FontWeight="SemiBold"
+                           Foreground="{DynamicResource TextPrimary}"/>
+              </StackPanel>
+
+              <ItemsControl ItemsSource="{Binding TechStack}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel ItemSpacing="8"/>
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="config:TechStackItem">
+                    <Border Classes="tech-item">
+                      <StackPanel Orientation="Horizontal" Spacing="5">
+                        <PathIcon Data="{Binding Icon, Converter={StaticResource IconKeyConverter}}"
+                                  Foreground="{Binding Color, Converter={StaticResource ColorStringConverter}}"
+                                  Width="12" Height="12"/>
+                        <TextBlock Text="{Binding Name}" FontSize="11"
+                                   Foreground="{DynamicResource TechItemText}" VerticalAlignment="Center"/>
+                      </StackPanel>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <Border Height="1" Background="{DynamicResource SeparatorLight}" Margin="0,2,0,0">
+                <Border.Transitions>
+                  <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.25"/>
+                  </Transitions>
+                </Border.Transitions>
+              </Border>
+
+              <ItemsControl ItemsSource="{Binding Links}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="config:LinkItem">
+                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2">
+                      <PathIcon Data="{Binding Icon, Converter={StaticResource IconKeyConverter}}"
+                                Foreground="{DynamicResource TextTertiary}" Width="12" Height="12"/>
+                      <TextBlock Text="{Binding Text}" FontSize="11"
+                                 Foreground="{DynamicResource TextTertiary}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+
+          <!-- 理念卡 -->
+          <Border x:Name="PhilosophyCard" Grid.Column="1" Classes="fluent-card" Opacity="0">
+            <Border.Effect>
+              <DropShadowEffect OffsetX="0" OffsetY="2" BlurRadius="8" Color="#000000" Opacity="0.06"/>
+            </Border.Effect>
+            <StackPanel Margin="20,18" Spacing="10" VerticalAlignment="Center">
+              <Border Width="32" Height="4" CornerRadius="2"
+                      Background="{DynamicResource AccentBrush}" HorizontalAlignment="Left"/>
+              <TextBlock Text="{Binding PhilosophyTitle}" FontSize="15" FontWeight="SemiBold"
+                         Foreground="{DynamicResource TextPrimary}" Margin="0,2,0,0"/>
+              <Border BorderThickness="3,0,0,0" BorderBrush="{DynamicResource QuoteBorder}" Padding="12,4,0,4">
+                <Border.Transitions>
+                  <Transitions>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+                  </Transitions>
+                </Border.Transitions>
+                <StackPanel Spacing="6">
+                  <TextBlock Text="{Binding PhilosophyQuote}" FontSize="12.5"
+                             Foreground="{DynamicResource TextSecondary}" TextWrapping="Wrap" LineHeight="20"/>
+                  <TextBlock Text="{Binding PhilosophyAttribution}" FontSize="12"
+                             Foreground="{DynamicResource TextTertiary}" FontStyle="Italic"/>
+                </StackPanel>
+              </Border>
+            </StackPanel>
+          </Border>
+
+        </Grid>
+      </Grid>
+    </Grid>
+  </Border>
+
+</Window>
