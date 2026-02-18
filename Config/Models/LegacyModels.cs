@@ -22,6 +22,12 @@ public sealed class ProfileConfig
 
     [YamlMember(Alias = "tags")]
     public List<string> Tags { get; set; } = [];
+
+    [YamlMember(Alias = "cover_image")]
+    public string CoverImage { get; set; } = "Assets/cover.jpg";
+
+    [YamlMember(Alias = "avatar_image")]
+    public string AvatarImage { get; set; } = "Assets/avatar.png";
 }
 
 public sealed class LocationConfig
@@ -31,6 +37,9 @@ public sealed class LocationConfig
 
     [YamlMember(Alias = "description")]
     public string Description { get; set; } = string.Empty;
+
+    [YamlMember(Alias = "map_image")]
+    public string MapImage { get; set; } = "Assets/map.png";
 }
 
 public sealed class SocialConfig

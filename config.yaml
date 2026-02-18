@@ -39,11 +39,21 @@ profile:
     - "Dev"
     - "INTP"
     - "Mtx"
+  # 图片路径（相对于 exe 所在目录，或绝对路径）
+  # 默认位于 exe 同级的 Assets 文件夹下
+  # 可自行替换图片文件，保持文件名一致即可
+  #   - Assets/cover.jpg   封面背景图
+  #   - Assets/avatar.png  头像图片
+  cover_image: "Assets/cover.jpg"
+  avatar_image: "Assets/avatar.png"
 
 # === 地理位置 ===
 location:
   city: "浙江 · 宁波"
   description: "qwqwqwq!"
+  # 地图图片路径
+  #   - Assets/map.png    地图图片
+  map_image: "Assets/map.png"
 
 # === 社交链接 ===
 social:

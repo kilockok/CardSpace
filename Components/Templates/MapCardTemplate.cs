@@ -23,7 +23,7 @@ public sealed class MapCardTemplate : TemplateBase, IComponentTemplate
     {
         var glass = IsGlass(currentStyle);
 
-        var contentGrid = BuildContentGrid(glass);
+        var contentGrid = BuildContentGrid(viewModel, glass);
 
         var outerBorder = glass
             ? BuildGlassShell("MapCard", contentGrid)
@@ -38,7 +38,7 @@ public sealed class MapCardTemplate : TemplateBase, IComponentTemplate
         // 热加载时由 LayoutEngine 重建
     }
 
-    private Grid BuildContentGrid(bool glass)
+    private Grid BuildContentGrid(MainViewModel viewModel, bool glass)
     {
         var contentGrid = new Grid();
 
@@ -51,7 +51,7 @@ public sealed class MapCardTemplate : TemplateBase, IComponentTemplate
         // 地图图片
         contentGrid.Children.Add(new Image
         {
-            Source = LoadAvaloniaResource("avares://PersonalCardDemo/Assets/map.png"),
+            Source = LoadImage(viewModel.MapImage),
             Stretch = Stretch.UniformToFill
         });
 

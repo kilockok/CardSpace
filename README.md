@@ -48,13 +48,33 @@ profile:
 
 ## 自定义图片
 
-将图片放入 `Assets/` 目录：
+图片资源独立存放于 exe 同级的 `Assets/` 文件夹中，不嵌入 exe 内部，方便直接替换。
 
-| 图片 | 文件名 | 推荐尺寸 | 说明 |
-|------|--------|----------|------|
+```
+PersonalCardDemo.exe
+config.yaml
+Assets/
+  cover.jpg      # 封面背景图
+  avatar.png     # 头像图片
+  map.png        # 地图图片
+```
+
+| 图片 | 文件路径 | 推荐尺寸 | 说明 |
+|------|----------|----------|------|
 | 封面图 | `Assets/cover.jpg` | 600x200 | 资料卡顶部背景 |
 | 头像 | `Assets/avatar.png` | 200x200 | 圆形裁剪，正方形即可 |
 | 地图截图 | `Assets/map.png` | 600x400 | 右上地图卡背景 |
+
+替换方式：直接用同名文件覆盖 `Assets/` 下对应图片，重启应用生效。也可以在 `config.yaml` 中修改路径指向其他文件名或绝对路径：
+
+```yaml
+profile:
+  cover_image: "Assets/cover.jpg"    # 封面背景图
+  avatar_image: "Assets/avatar.png"  # 头像图片
+
+location:
+  map_image: "Assets/map.png"        # 地图图片
+```
 
 ## 项目结构
 

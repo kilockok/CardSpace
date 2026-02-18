@@ -68,7 +68,7 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
         });
         coverPanel.Children.Add(new Image
         {
-            Source = LoadAvaloniaResource("avares://PersonalCardDemo/Assets/cover.jpg"),
+            Source = LoadImage(viewModel.CoverImage),
             Stretch = Stretch.UniformToFill
         });
         coverBorder.Child = coverPanel;
@@ -132,7 +132,7 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
         };
         avatarImgBorder.Child = new Image
         {
-            Source = LoadAvaloniaResource("avares://PersonalCardDemo/Assets/avatar.png"),
+            Source = LoadImage(viewModel.AvatarImage),
             Stretch = Stretch.UniformToFill
         };
         avatarPanel.Children.Add(avatarImgBorder);

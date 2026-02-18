@@ -49,6 +49,29 @@ public sealed class MainViewModel : ViewModelBase
         private set => SetField(ref _tags, value);
     }
 
+    // === 图片路径 ===
+
+    private string _coverImage = "Assets/cover.jpg";
+    public string CoverImage
+    {
+        get => _coverImage;
+        private set => SetField(ref _coverImage, value);
+    }
+
+    private string _avatarImage = "Assets/avatar.png";
+    public string AvatarImage
+    {
+        get => _avatarImage;
+        private set => SetField(ref _avatarImage, value);
+    }
+
+    private string _mapImage = "Assets/map.png";
+    public string MapImage
+    {
+        get => _mapImage;
+        private set => SetField(ref _mapImage, value);
+    }
+
     // === 地点 ===
 
     private string _city = string.Empty;
@@ -132,9 +155,12 @@ public sealed class MainViewModel : ViewModelBase
         AvatarFallback = config.Profile.AvatarFallback;
         Signature = $"\u201C{config.Profile.Signature}\u201D";
         Tags = new ObservableCollection<string>(config.Profile.Tags);
+        CoverImage = config.Profile.CoverImage;
+        AvatarImage = config.Profile.AvatarImage;
 
         City = config.Location.City;
         LocationDescription = config.Location.Description;
+        MapImage = config.Location.MapImage;
 
         XUrl = config.Social.X;
         GitHubUrl = config.Social.GitHub;

@@ -156,7 +156,35 @@ public abstract class TemplateBase
     // -- 资源加载 --
 
     /// <summary>
-    /// 加载 avares:// 协议的图片资源
+    /// 从文件系统加载图片，路径相对于 exe 所在目录
+    /// Assets 不再嵌入程序集，统一从外部文件加载
+    /// </summary>
+    protected static IImage? LoadImage(string relativePath, string? fallbackAvares = null)
+    {
+        var basePath = AppContext.BaseDirectory;
+        var fullPath = System.IO.Path.Combine(basePath, relativePath);
+
+        if (System.IO.File.Exists(fullPath))
+        {
+            try
+            {
+                return new Bitmap(fullPath);
+            }
+            catch
+            {
+                System.Diagnostics.Debug.WriteLine($"[LoadImage] 文件损坏或格式不支持: {fullPath}");
+            }
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine($"[LoadImage] 文件不存在: {fullPath}，请检查 Assets 文件夹是否在 exe 同级目录");
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 加载 avares:// 协议的嵌入图片资源
     /// </summary>
     protected static IImage? LoadAvaloniaResource(string uri)
     {
