@@ -89,43 +89,69 @@ public abstract class TemplateBase
     // -- 卡片外壳构建（通用实现，子类不再重复） --
 
     /// <summary>
-    /// Fluent 单层结构：Border 承载 Background/Border/Shadow，由 AXAML fluent-card 样式控制
+    /// Fluent 卡片外壳
+    /// 视觉层（背景/边框/圆角/阴影）和内容层分离，避免 CornerRadius 裁切 scale 动画
+    /// clipContent=true 时内容层也裁切（地图等全出血图片需要）
     /// </summary>
-    /// <param name="clipContent">是否裁剪子内容（地图等全出血图片需要，有 scale 动画的卡片不要）</param>
-    protected static Border BuildFluentShell(string name, Control content, bool clipContent = false)
+    protected static Panel BuildFluentShell(string name, Control content, bool clipContent = false)
     {
-        return new Border
+        var root = new Panel { Name = name };
+
+        // 底层：视觉装饰（背景、边框、圆角、阴影）
+        var decorBorder = new Border
         {
-            Name = name,
-            ClipToBounds = clipContent,
             Classes = { "fluent-card" },
+            IsHitTestVisible = false,
             Effect = new DropShadowEffect
             {
                 OffsetX = 0, OffsetY = 2, BlurRadius = 8,
                 Color = Colors.Black, Opacity = 0.06
-            },
-            Child = content
+            }
         };
+        root.Children.Add(decorBorder);
+
+        // 上层：内容，不受圆角裁切
+        if (clipContent)
+        {
+            // 全出血内容需要裁切（如地图图片）
+            var clipBorder = new Border
+            {
+                CornerRadius = new CornerRadius(8),
+                ClipToBounds = true,
+                Child = content
+            };
+            root.Children.Add(clipBorder);
+        }
+        else
+        {
+            root.Children.Add(content);
+        }
+
+        return root;
     }
 
     /// <summary>
-    /// Glass 双层结构：outerBorder -> Panel -> [AcrylicBorder, innerBorder -> content]
+    /// Glass 卡片外壳
+    /// 视觉层（亚克力/背景/边框/圆角/阴影）和内容层分离，避免 CornerRadius 裁切 scale 动画
     /// </summary>
-    protected static Border BuildGlassShell(string name, Control content)
+    protected static Panel BuildGlassShell(string name, Control content)
     {
-        var outerBorder = new Border
+        var root = new Panel
         {
-            CornerRadius = new CornerRadius(10),
-            ClipToBounds = true,
             Name = name,
             Classes = { "glass-card" }
         };
 
-        var panel = new Panel();
-
-        panel.Children.Add(new ExperimentalAcrylicBorder
+        // 底层：亚克力 + 视觉装饰，用 ClipToBounds 裁切圆角溢出
+        var decorBorder = new Border
         {
-            IsHitTestVisible = false,
+            CornerRadius = new CornerRadius(10),
+            ClipToBounds = true,
+            IsHitTestVisible = false
+        };
+        var decorPanel = new Panel();
+        decorPanel.Children.Add(new ExperimentalAcrylicBorder
+        {
             Material = new ExperimentalAcrylicMaterial
             {
                 BackgroundSource = AcrylicBackgroundSource.Digger,
@@ -134,30 +160,31 @@ public abstract class TemplateBase
                 MaterialOpacity = 0.15
             }
         });
-
-        var innerBorder = new Border
+        decorPanel.Children.Add(new Border
         {
             BorderThickness = new Thickness(1),
             BorderBrush = TryGetBrush("GlassCardBorder"),
-            Background = TryGetBrush("GlassCardGradient"),
-            Effect = new DropShadowEffect
-            {
-                OffsetX = 0, OffsetY = 8, BlurRadius = 16,
-                Color = Colors.Black, Opacity = 0.10
-            },
-            Child = content
+            Background = TryGetBrush("GlassCardGradient")
+        });
+        decorBorder.Child = decorPanel;
+        decorBorder.Effect = new DropShadowEffect
+        {
+            OffsetX = 0, OffsetY = 8, BlurRadius = 16,
+            Color = Colors.Black, Opacity = 0.10
         };
+        root.Children.Add(decorBorder);
 
-        panel.Children.Add(innerBorder);
-        outerBorder.Child = panel;
-        return outerBorder;
+        // 上层：内容，不受圆角裁切
+        root.Children.Add(content);
+
+        return root;
     }
 
     // -- 资源加载 --
 
     /// <summary>
     /// 从文件系统加载图片，路径相对于 exe 所在目录
-    /// Assets 不再嵌入程序集，统一从外部文件加载
+    /// 使用字节流加载，不锁定文件，支持热替换
     /// </summary>
     protected static IImage? LoadImage(string relativePath, string? fallbackAvares = null)
     {
@@ -168,7 +195,10 @@ public abstract class TemplateBase
         {
             try
             {
-                return new Bitmap(fullPath);
+                // 读取字节流后立即释放文件句柄，避免锁定文件
+                var bytes = System.IO.File.ReadAllBytes(fullPath);
+                using var stream = new System.IO.MemoryStream(bytes);
+                return new Bitmap(stream);
             }
             catch
             {

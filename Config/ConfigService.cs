@@ -74,7 +74,9 @@ public sealed class ConfigService : IConfigService
     private readonly ISerializer _serializer;
 
     private FileSystemWatcher? _watcher;
+    private FileSystemWatcher? _assetsWatcher;
     private Timer? _debounceTimer;
+    private bool _pendingConfigReload;
     private readonly object _lock = new();
 
     public AppConfig Current { get; private set; } = new();
@@ -135,6 +137,22 @@ public sealed class ConfigService : IConfigService
 
         _watcher.Changed += OnFileChanged;
         _watcher.Created += OnFileChanged;
+
+        // 监听 Assets 目录，图片替换时触发 UI 重建
+        var assetsDir = Path.Combine(dir, "Assets");
+        if (Directory.Exists(assetsDir))
+        {
+            _assetsWatcher = new FileSystemWatcher(assetsDir)
+            {
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime | NotifyFilters.FileName,
+                IncludeSubdirectories = true,
+                EnableRaisingEvents = true
+            };
+
+            _assetsWatcher.Changed += OnAssetFileChanged;
+            _assetsWatcher.Created += OnAssetFileChanged;
+            _assetsWatcher.Renamed += (_, _) => OnAssetFileChanged(null!, null!);
+        }
     }
 
     public void StopWatching()
@@ -146,6 +164,15 @@ public sealed class ConfigService : IConfigService
             _watcher.Created -= OnFileChanged;
             _watcher.Dispose();
             _watcher = null;
+        }
+
+        if (_assetsWatcher != null)
+        {
+            _assetsWatcher.EnableRaisingEvents = false;
+            _assetsWatcher.Changed -= OnAssetFileChanged;
+            _assetsWatcher.Created -= OnAssetFileChanged;
+            _assetsWatcher.Dispose();
+            _assetsWatcher = null;
         }
     }
 
@@ -160,26 +187,60 @@ public sealed class ConfigService : IConfigService
     /// </summary>
     private void OnFileChanged(object sender, FileSystemEventArgs e)
     {
+        ScheduleDebounce(reloadConfig: true);
+    }
+
+    /// <summary>
+    /// Assets 目录文件变更回调，触发 UI 重建以重新加载图片
+    /// </summary>
+    private void OnAssetFileChanged(object sender, FileSystemEventArgs e)
+    {
+        ScheduleDebounce(reloadConfig: false);
+    }
+
+    /// <summary>
+    /// 统一防抖调度，多次触发时合并 reloadConfig 标记
+    /// </summary>
+    private void ScheduleDebounce(bool reloadConfig)
+    {
         lock (_lock)
         {
+            // 只要有一次需要 reload config，就保留该标记
+            _pendingConfigReload = _pendingConfigReload || reloadConfig;
             _debounceTimer?.Dispose();
-            _debounceTimer = new Timer(OnDebounceElapsed, null, DebounceDelayMs, Timeout.Infinite);
+            var needReload = _pendingConfigReload;
+            _debounceTimer = new Timer(_ =>
+            {
+                lock (_lock) { _pendingConfigReload = false; }
+                OnDebounceElapsed(needReload);
+            }, null, DebounceDelayMs, Timeout.Infinite);
         }
     }
 
     /// <summary>
     /// 防抖结束后执行实际的配置重载
+    /// reloadConfig=true 时重新解析 config.yaml
+    /// reloadConfig=false 时仅触发事件让 UI 重建（用于 Assets 文件变更）
     /// </summary>
-    private void OnDebounceElapsed(object? state)
+    private void OnDebounceElapsed(bool reloadConfig)
     {
         try
         {
-            var newConfig = LoadFromFile();
-            newConfig = _migrator.Migrate(newConfig);
-            newConfig = _validator.Validate(newConfig);
-
             var oldConfig = Current;
-            Current = newConfig;
+            AppConfig newConfig;
+
+            if (reloadConfig)
+            {
+                newConfig = LoadFromFile();
+                newConfig = _migrator.Migrate(newConfig);
+                newConfig = _validator.Validate(newConfig);
+                Current = newConfig;
+            }
+            else
+            {
+                // Assets 变更，配置不变，但需要触发重建以重新加载图片
+                newConfig = oldConfig;
+            }
 
             // 切换到 UI 线程触发事件
             Dispatcher.UIThread.Post(() =>
