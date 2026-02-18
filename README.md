@@ -1,4 +1,4 @@
-# PersonalCardDemo
+# CardSpaceDemo
 
 基于 Avalonia UI 的个人主页卡片桌面应用，支持 Fluent / Glass 双风格切换、亮暗主题、配置热加载。
 
@@ -110,13 +110,6 @@ PersonalCardDemo/
     ServiceCollectionExtensions.cs  # DI 注册
   Assets/                       # 图片资源
 ```
-
-## 技术栈
-
-- [Avalonia UI](https://avaloniaui.net/) 11.3
-- .NET 8.0
-- YamlDotNet
-- Microsoft.Extensions.DependencyInjection
 
 ## 平台支持
 
