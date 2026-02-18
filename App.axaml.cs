@@ -1,10 +1,11 @@
 using System;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Styling;
+using Microsoft.Extensions.DependencyInjection;
 using PersonalCardDemo.Config;
+using PersonalCardDemo.Layout;
+using PersonalCardDemo.Styles;
 using PersonalCardDemo.ViewModels;
 using PersonalCardDemo.Views;
 
@@ -12,6 +13,11 @@ namespace PersonalCardDemo;
 
 public partial class App : Application
 {
+    /// <summary>
+    /// DI 容器，由 Program.Main 在 AfterSetup 中注入
+    /// </summary>
+    public IServiceProvider? Services { get; set; }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -19,36 +25,21 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+            && Services is not null)
         {
-            var config = ConfigLoader.Load();
-            var viewModel = new CardViewModel(config);
+            var configService = Services.GetRequiredService<IConfigService>();
+            var config = configService.Load();
 
-            var isGlass = string.Equals(config.Style, "glass", StringComparison.OrdinalIgnoreCase);
+            var viewModel = Services.GetRequiredService<MainViewModel>();
+            viewModel.UpdateFromConfig(config);
 
-            if (isGlass)
-            {
-                // Glass 风格固定暗色
-                RequestedThemeVariant = ThemeVariant.Dark;
-                LoadStyleResource("avares://PersonalCardDemo/Styles/GlassStyle.axaml");
-                desktop.MainWindow = new GlassWindow { DataContext = viewModel };
-            }
-            else
-            {
-                // Fluent 风格支持亮/暗
-                var isDark = string.Equals(config.Theme, "dark", StringComparison.OrdinalIgnoreCase);
-                RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
-                LoadStyleResource("avares://PersonalCardDemo/Styles/FluentStyle.axaml");
-                desktop.MainWindow = new FluentWindow(isDark) { DataContext = viewModel };
-            }
+            var layoutEngine = Services.GetRequiredService<ILayoutEngine>();
+            var styleManager = Services.GetRequiredService<IStyleManager>();
+
+            desktop.MainWindow = new MainWindow(configService, layoutEngine, styleManager, viewModel);
         }
 
         base.OnFrameworkInitializationCompleted();
-    }
-
-    private void LoadStyleResource(string uri)
-    {
-        var resource = (ResourceDictionary)AvaloniaXamlLoader.Load(new Uri(uri));
-        Resources.MergedDictionaries.Add(resource);
     }
 }

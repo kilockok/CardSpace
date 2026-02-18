@@ -2,6 +2,20 @@
 bin/
 obj/
 
+# 发布输出
+publish/
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
 # Claude Code
 .claude/
 CLAUDE.md
+
+# 系统文件
+.DS_Store
+Thumbs.db

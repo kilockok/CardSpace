@@ -1,10 +1,35 @@
-# 风格: fluent | glass
-style: glass
+# === 窗口配置 ===
+window:
+  width: 960
+  height: 680
+  can_resize: false
+  title: "个人主页"
 
-# 主题: light | dark (仅 fluent 风格支持切换，glass 固定暗色)
+# === 风格配置 ===
+# fluent: Windows 风格，支持亮/暗主题
+# glass: 液态玻璃风格，固定暗色
+style: fluent
+
+# === 主题（仅 fluent 生效）===
 theme: light
 
-# 个人信息
+# === 布局配置（Fluent 风格） ===
+layout:
+  columns: "300,*"
+  rows: "*,210"
+  column_spacing: 16
+  row_spacing: 16
+  margin: "20,8,20,20"
+
+# === 布局配置（Glass 风格覆写） ===
+layout_glass:
+  columns: "300,*"
+  rows: "*,200"
+  column_spacing: 24
+  row_spacing: 24
+  margin: "24"
+
+# === 个人信息 ===
 profile:
   name: "Kilock"
   id: "@kilock_1208"
@@ -15,17 +40,17 @@ profile:
     - "INTP"
     - "Mtx"
 
-# 地点
+# === 地理位置 ===
 location:
   city: "浙江 · 宁波"
   description: "qwqwqwq!"
 
-# 社交链接
+# === 社交链接 ===
 social:
   x: "https://x.com/kilock_1208"
   github: "https://github.com/kilockok"
 
-# 技术栈 (name + icon 对应内置图标 key)
+# === 技术栈 ===
 tech_stack:
   - name: "C++"
     icon: "CppIcon"
@@ -46,16 +71,63 @@ tech_stack:
     icon: "DockerIcon"
     color: "#2496ED"
 
-# 链接展示
+# === 链接 ===
 links:
   - icon: "GitHubIcon"
     text: "github.com/kilockok"
   - icon: "BlogIcon"
     text: "清凤.fun"
 
-# 理念
+# === 理念 ===
 philosophy:
   title: "Our Philosophy"
   quotes:
     - "活下去，去做更多、更优秀的作品"
   attribution: "以及陪着清凤"
+
+# === 组件声明 ===
+# 每个组件对应一个预定义模板，通过 type 引用
+# 支持 Grid 布局参数、可见性、z-index、元素属性覆写
+components:
+  - name: "profile_card"
+    type: "profile_card"
+    grid_row: 0
+    grid_column: 0
+    grid_row_span: 2
+    grid_column_span: 1
+    visible: true
+    z_index: 0
+    overrides:
+      name_text:
+        font_size: 22
+        font_weight: "SemiBold"
+      id_text:
+        font_size: 13
+      signature_text:
+        font_size: 13
+        font_style: "Italic"
+
+  - name: "map_card"
+    type: "map_card"
+    grid_row: 0
+    grid_column: 1
+    visible: true
+    z_index: 0
+
+  - name: "tech_card"
+    type: "tech_stack_card"
+    grid_row: 1
+    grid_column: 1
+    visible: true
+    z_index: 0
+    sub_columns: "*,*"
+    sub_column_spacing: 16
+    sub_column: 0
+
+  - name: "philosophy_card"
+    type: "philosophy_card"
+    grid_row: 1
+    grid_column: 1
+    visible: true
+    z_index: 0
+    sub_column: 1

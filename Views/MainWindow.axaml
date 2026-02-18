@@ -1,0 +1,274 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="PersonalCardDemo.Views.MainWindow"
+        Width="960" Height="680"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        Background="Transparent"
+        SystemDecorations="None">
+
+  <Window.Styles>
+
+    <!-- 通用文本过渡 -->
+    <Style Selector="TextBlock">
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="0:0:0.25"/>
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <Style Selector="PathIcon">
+      <Setter Property="VerticalAlignment" Value="Center"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Foreground" Duration="0:0:0.25"/>
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <!-- Fluent 标题栏按钮 -->
+    <Style Selector="Button.win-caption">
+      <Setter Property="Width" Value="46"/>
+      <Setter Property="Height" Value="32"/>
+      <Setter Property="CornerRadius" Value="0"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.1"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.win-caption:pointerover">
+      <Setter Property="Background" Value="{DynamicResource CaptionHover}"/>
+    </Style>
+    <Style Selector="Button.win-caption:pressed">
+      <Setter Property="Background" Value="{DynamicResource CaptionPressed}"/>
+    </Style>
+    <Style Selector="Button.win-caption-close:pointerover">
+      <Setter Property="Background" Value="#E81123"/>
+    </Style>
+    <Style Selector="Button.win-caption-close:pointerover TextBlock">
+      <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.win-caption-close:pressed">
+      <Setter Property="Background" Value="#F1707A"/>
+    </Style>
+    <Style Selector="Button.win-caption TextBlock">
+      <Setter Property="FontSize" Value="10"/>
+      <Setter Property="Foreground" Value="{DynamicResource CaptionForeground}"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <!-- macOS 红绿灯按钮 -->
+    <Style Selector="Button.traffic">
+      <Setter Property="Width" Value="13"/>
+      <Setter Property="Height" Value="13"/>
+      <Setter Property="CornerRadius" Value="7"/>
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="Button.traffic TextBlock.icon">
+      <Setter Property="FontSize" Value="9"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="Transparent"/>
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+      <Setter Property="VerticalAlignment" Value="Center"/>
+      <Setter Property="Margin" Value="0,-1,0,0"/>
+    </Style>
+    <Style Selector="Button.traffic-close">
+      <Setter Property="Background" Value="#FF5F57"/>
+    </Style>
+    <Style Selector="Button.traffic-minimize">
+      <Setter Property="Background" Value="#FEBC2E"/>
+    </Style>
+    <Style Selector="Button.traffic-maximize">
+      <Setter Property="Background" Value="#28C840"/>
+    </Style>
+    <Style Selector="StackPanel.traffic-group:pointerover Button.traffic TextBlock.icon">
+      <Setter Property="Foreground" Value="#4D000000"/>
+    </Style>
+    <Style Selector="Button.traffic-close:pointerover">
+      <Setter Property="Background" Value="#FF4136"/>
+    </Style>
+    <Style Selector="Button.traffic-minimize:pointerover">
+      <Setter Property="Background" Value="#F5C451"/>
+    </Style>
+    <Style Selector="Button.traffic-maximize:pointerover">
+      <Setter Property="Background" Value="#2ACB42"/>
+    </Style>
+    <Style Selector="Button.traffic:pressed">
+      <Setter Property="Opacity" Value="0.7"/>
+    </Style>
+
+    <!-- === Glass 风格标签 === -->
+    <Style Selector="Border.glass-tag">
+      <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+      <Setter Property="RenderTransform" Value="scale(1,1)"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.2"/>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Border.glass-tag:pointerover">
+      <Setter Property="Background" Value="#28FFFFFF"/>
+      <Setter Property="RenderTransform" Value="scale(1.06,1.06)"/>
+    </Style>
+
+    <!-- === Fluent 风格标签 === -->
+    <Style Selector="Border.fluent-tag">
+      <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+      <Setter Property="RenderTransform" Value="scale(1,1)"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15"/>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Border.fluent-tag:pointerover">
+      <Setter Property="Background" Value="{DynamicResource TagHoverBackground}"/>
+      <Setter Property="RenderTransform" Value="scale(1.05,1.05)"/>
+    </Style>
+
+    <!-- === Glass 风格社交按钮 === -->
+    <Style Selector="Button.glass-social">
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+      <Setter Property="RenderTransform" Value="scale(1,1)"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+          <BrushTransition Property="Background" Duration="0:0:0.2"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.glass-social:pointerover">
+      <Setter Property="Background" Value="{DynamicResource GlassSocialHoverBackground}"/>
+      <Setter Property="RenderTransform" Value="scale(1.12,1.12)"/>
+    </Style>
+    <Style Selector="Button.glass-social:pressed">
+      <Setter Property="Background" Value="#35FFFFFF"/>
+      <Setter Property="RenderTransform" Value="scale(0.94,0.94)"/>
+    </Style>
+
+    <!-- === Fluent 风格社交按钮 === -->
+    <Style Selector="Button.fluent-social">
+      <Setter Property="Padding" Value="0"/>
+      <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+      <Setter Property="RenderTransform" Value="scale(1,1)"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+          <BrushTransition Property="Background" Duration="0:0:0.15"/>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Button.fluent-social:pointerover">
+      <Setter Property="Background" Value="{DynamicResource SocialHoverBackground}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource SocialHoverBorder}"/>
+      <Setter Property="RenderTransform" Value="scale(1.08,1.08)"/>
+    </Style>
+    <Style Selector="Button.fluent-social:pressed">
+      <Setter Property="Background" Value="{DynamicResource SocialPressedBackground}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource SocialPressedBorder}"/>
+      <Setter Property="RenderTransform" Value="scale(0.96,0.96)"/>
+    </Style>
+
+    <!-- === Glass 风格技术栈项 === -->
+    <Style Selector="Border.glass-tech-item">
+      <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+      <Setter Property="RenderTransform" Value="scale(1,1) translateY(0)"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15"/>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Border.glass-tech-item:pointerover">
+      <Setter Property="Background" Value="#1AFFFFFF"/>
+      <Setter Property="BorderBrush" Value="#20FFFFFF"/>
+      <Setter Property="RenderTransform" Value="scale(1.04,1.04) translateY(-1px)"/>
+    </Style>
+
+    <!-- === Fluent 风格技术栈项 === -->
+    <Style Selector="Border.fluent-tech-item">
+      <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+      <Setter Property="RenderTransform" Value="scale(1,1) translateY(0)"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.15"/>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15"/>
+        </Transitions>
+      </Setter>
+    </Style>
+    <Style Selector="Border.fluent-tech-item:pointerover">
+      <Setter Property="Background" Value="{DynamicResource TechItemHoverBackground}"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource TechItemHoverBorder}"/>
+      <Setter Property="RenderTransform" Value="scale(1.04,1.04) translateY(-1px)"/>
+    </Style>
+
+    <!-- === Fluent 卡片基础样式（和旧 FluentWindow.axaml 一致） === -->
+    <Style Selector="Border.fluent-card">
+      <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+      <Setter Property="CornerRadius" Value="8"/>
+      <Setter Property="BorderBrush" Value="{DynamicResource CardBorder}"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Transitions">
+        <Transitions>
+          <BrushTransition Property="Background" Duration="0:0:0.25"/>
+          <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.35" Easing="CubicEaseOut"/>
+        </Transitions>
+      </Setter>
+    </Style>
+
+    <!-- === Glass 卡片入场过渡 === -->
+    <Style Selector="Border.glass-card">
+      <Setter Property="Transitions">
+        <Transitions>
+          <DoubleTransition Property="Opacity" Duration="0:0:0.35" Easing="CubicEaseOut"/>
+          <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.35" Easing="CubicEaseOut"/>
+        </Transitions>
+      </Setter>
+    </Style>
+
+  </Window.Styles>
+
+  <!-- 根容器 -->
+  <Border x:Name="RootBorder" CornerRadius="8" ClipToBounds="True">
+    <Border.Transitions>
+      <Transitions>
+        <BrushTransition Property="Background" Duration="0:0:0.25"/>
+        <BrushTransition Property="BorderBrush" Duration="0:0:0.25"/>
+      </Transitions>
+    </Border.Transitions>
+
+    <Grid RowDefinitions="Auto,*">
+
+      <!-- 标题栏占位（由 code-behind 动态填充） -->
+      <ContentControl x:Name="TitleBarHost" Grid.Row="0"/>
+
+      <!-- 内容区域占位（由 LayoutEngine 动态填充） -->
+      <ContentControl x:Name="ContentHost" Grid.Row="1"/>
+
+    </Grid>
+  </Border>
+
+</Window>
