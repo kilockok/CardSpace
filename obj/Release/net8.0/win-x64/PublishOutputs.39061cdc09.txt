@@ -1,0 +1,6 @@
+D:\Code\readmewebgenerator\PersonalCardDemo\publish\win-x64\Icons.axaml
+D:\Code\readmewebgenerator\PersonalCardDemo\publish\win-x64\Assets\avatar.png
+D:\Code\readmewebgenerator\PersonalCardDemo\publish\win-x64\Assets\cover.jpg
+D:\Code\readmewebgenerator\PersonalCardDemo\publish\win-x64\Assets\map.png
+D:\Code\readmewebgenerator\PersonalCardDemo\publish\win-x64\config.yaml
+D:\Code\readmewebgenerator\PersonalCardDemo\publish\win-x64\PersonalCardDemo.exe

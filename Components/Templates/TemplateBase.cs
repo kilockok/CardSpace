@@ -133,8 +133,9 @@ public abstract class TemplateBase
     /// <summary>
     /// Glass 卡片外壳
     /// 视觉层（亚克力/背景/边框/圆角/阴影）和内容层分离，避免 CornerRadius 裁切 scale 动画
+    /// clipContent=true 时内容层也裁切（地图等全出血图片需要）
     /// </summary>
-    protected static Panel BuildGlassShell(string name, Control content)
+    protected static Panel BuildGlassShell(string name, Control content, bool clipContent = false)
     {
         var root = new Panel
         {
@@ -174,8 +175,21 @@ public abstract class TemplateBase
         };
         root.Children.Add(decorBorder);
 
-        // 上层：内容，不受圆角裁切
-        root.Children.Add(content);
+        // 上层：内容
+        if (clipContent)
+        {
+            var clipBorder = new Border
+            {
+                CornerRadius = new CornerRadius(10),
+                ClipToBounds = true,
+                Child = content
+            };
+            root.Children.Add(clipBorder);
+        }
+        else
+        {
+            root.Children.Add(content);
+        }
 
         return root;
     }

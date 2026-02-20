@@ -6,12 +6,6 @@
         <FluentTheme />
     </Application.Styles>
 
-    <Application.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://PersonalCardDemo/Styles/Icons.axaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </Application.Resources>
+    <!-- Icons.axaml 由运行时从外部文件加载，见 App.axaml.cs -->
 
 </Application>

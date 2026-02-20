@@ -26,7 +26,7 @@ public sealed class MapCardTemplate : TemplateBase, IComponentTemplate
         var contentGrid = BuildContentGrid(viewModel, glass);
 
         var outerBorder = glass
-            ? BuildGlassShell("MapCard", contentGrid)
+            ? BuildGlassShell("MapCard", contentGrid, clipContent: true)
             : BuildFluentShell("MapCard", contentGrid, clipContent: true);
 
         outerBorder.DataContext = viewModel;
