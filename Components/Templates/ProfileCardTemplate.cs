@@ -30,6 +30,7 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
 
         // 内容 Grid：三行布局（封面、头像、内容区）
         var contentGrid = BuildContentGrid(config, viewModel, glass);
+        contentGrid.ClipToBounds = false;
 
         // 根据风格构建不同的卡片外壳
         var outerBorder = glass
@@ -145,7 +146,8 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
         var contentStack = new StackPanel
         {
             Spacing = glass ? 16 : 14,
-            Margin = new Thickness(24, glass ? 8 : 6, 24, 24)
+            Margin = new Thickness(24, glass ? 8 : 6, 24, 24),
+            ClipToBounds = false
         };
 
         // 姓名 + ID
@@ -182,11 +184,13 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
         var tagsControl = new ItemsControl
         {
             HorizontalAlignment = HorizontalAlignment.Center,
+            ClipToBounds = false,
             ItemsPanel = new FuncTemplate<Panel?>(() =>
                 new WrapPanel
                 {
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    ItemSpacing = 8
+                    ItemSpacing = 8,
+                    ClipToBounds = false
                 }),
             ItemTemplate = new FuncDataTemplate<string>((tag, _) =>
             {

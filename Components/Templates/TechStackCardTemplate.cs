@@ -46,7 +46,8 @@ public sealed class TechStackCardTemplate : TemplateBase, IComponentTemplate
         var contentStack = new StackPanel
         {
             Margin = glass ? new Thickness(16, 14) : new Thickness(16, 12),
-            Spacing = glass ? 10 : 8
+            Spacing = glass ? 10 : 8,
+            ClipToBounds = false
         };
 
         // 标题行
@@ -77,11 +78,13 @@ public sealed class TechStackCardTemplate : TemplateBase, IComponentTemplate
         // 技术栈列表
         var techItems = new ItemsControl
         {
+            ClipToBounds = false,
             ItemsPanel = new FuncTemplate<Panel?>(() =>
                 new WrapPanel
                 {
                     // Glass 间距 10，Fluent 间距 8（和旧 AXAML 一致）
-                    ItemSpacing = glass ? 10 : 8
+                    ItemSpacing = glass ? 10 : 8,
+                    ClipToBounds = false
                 }),
             ItemTemplate = new FuncDataTemplate<TechStackItem>((item, _) =>
             {
