@@ -4,3 +4,10 @@ publish/
 *.exe
 *.dll
 *.pdb
+
+# AI coding tools
+.claude/
+.cursor/
+.aider*
+.windsurf/
+.continue/
