@@ -58,7 +58,6 @@
       <SolidColorBrush x:Key="ThemeToggleForeground" Color="#606060"/>
       <SolidColorBrush x:Key="AccentBrush" Color="#0078D4"/>
       <SolidColorBrush x:Key="LocationIconForeground" Color="#D13438"/>
-      <SolidColorBrush x:Key="AvatarFallbackBackground" Color="#0078D4"/>
     </ResourceDictionary>
 
     <!-- ============ Dark ============ -->
@@ -116,7 +115,6 @@
       <SolidColorBrush x:Key="ThemeToggleForeground" Color="#C0C0C0"/>
       <SolidColorBrush x:Key="AccentBrush" Color="#4A90C8"/>
       <SolidColorBrush x:Key="LocationIconForeground" Color="#F07070"/>
-      <SolidColorBrush x:Key="AvatarFallbackBackground" Color="#2A6FA0"/>
     </ResourceDictionary>
 
   </ResourceDictionary.ThemeDictionaries>

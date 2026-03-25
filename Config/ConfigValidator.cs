@@ -96,9 +96,6 @@ public sealed class ConfigValidator
     {
         if (string.IsNullOrWhiteSpace(profile.Name))
             profile.Name = "User";
-
-        if (string.IsNullOrWhiteSpace(profile.AvatarFallback))
-            profile.AvatarFallback = profile.Name[..1].ToUpperInvariant();
     }
 
     private static void ValidatePhilosophy(PhilosophyConfig philosophy)

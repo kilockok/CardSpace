@@ -339,7 +339,6 @@ public static class ConfigDefaults
             {
                 Name = "Kilock",
                 Id = "@kilock_1208",
-                AvatarFallback = "K",
                 Signature = "清凤凤凤凤凤!",
                 Tags = ["Dev", "INTP", "Mtx"]
             },

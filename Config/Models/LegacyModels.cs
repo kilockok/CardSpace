@@ -14,9 +14,6 @@ public sealed class ProfileConfig
     [YamlMember(Alias = "id")]
     public string Id { get; set; } = "@kilock_1208";
 
-    [YamlMember(Alias = "avatar_fallback")]
-    public string AvatarFallback { get; set; } = "K";
-
     [YamlMember(Alias = "signature")]
     public string Signature { get; set; } = string.Empty;
 

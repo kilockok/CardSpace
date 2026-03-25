@@ -28,13 +28,6 @@ public sealed class MainViewModel : ViewModelBase
         private set => SetField(ref _id, value);
     }
 
-    private string _avatarFallback = string.Empty;
-    public string AvatarFallback
-    {
-        get => _avatarFallback;
-        private set => SetField(ref _avatarFallback, value);
-    }
-
     private string _signature = string.Empty;
     public string Signature
     {
@@ -152,7 +145,6 @@ public sealed class MainViewModel : ViewModelBase
     {
         Name = config.Profile.Name;
         Id = config.Profile.Id;
-        AvatarFallback = config.Profile.AvatarFallback;
         Signature = $"\u201C{config.Profile.Signature}\u201D";
         Tags = new ObservableCollection<string>(config.Profile.Tags);
         CoverImage = config.Profile.CoverImage;

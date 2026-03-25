@@ -33,7 +33,6 @@ layout_glass:
 profile:
   name: "Kilock"
   id: "@kilock_1208"
-  avatar_fallback: "K"
   signature: "清凤凤凤凤凤!"
   tags:
     - "Dev"
