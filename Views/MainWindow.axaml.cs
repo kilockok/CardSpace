@@ -97,13 +97,19 @@ public partial class MainWindow : Window
 
         var styleChanged = !string.Equals(e.OldConfig.Style, e.NewConfig.Style, StringComparison.OrdinalIgnoreCase);
         var themeChanged = !string.Equals(e.OldConfig.Theme, e.NewConfig.Theme, StringComparison.OrdinalIgnoreCase);
+        var titleChanged = !string.Equals(
+            e.OldConfig.Window.Title,
+            e.NewConfig.Window.Title,
+            StringComparison.Ordinal);
 
         if (styleChanged || themeChanged)
             _styleManager!.ApplyStyle(e.NewConfig.Style, e.NewConfig.Theme);
 
-        if (styleChanged)
-        {
+        if (styleChanged || themeChanged || titleChanged)
             BuildTitleBar();
+
+        if (styleChanged || themeChanged)
+        {
             ApplyRootStyle();
         }
 

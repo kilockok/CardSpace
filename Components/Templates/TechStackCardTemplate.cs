@@ -26,7 +26,7 @@ public sealed class TechStackCardTemplate : TemplateBase, IComponentTemplate
     {
         var glass = IsGlass(currentStyle);
 
-        var contentStack = BuildContentStack(glass);
+        var contentStack = BuildContentStack(config, glass);
 
         var outerBorder = glass
             ? BuildGlassShell("TechCard", contentStack)
@@ -41,12 +41,12 @@ public sealed class TechStackCardTemplate : TemplateBase, IComponentTemplate
         // 热加载时由 LayoutEngine 重建
     }
 
-    private StackPanel BuildContentStack(bool glass)
+    private StackPanel BuildContentStack(ComponentConfig config, bool glass)
     {
         var contentStack = new StackPanel
         {
-            Margin = glass ? new Thickness(16, 14) : new Thickness(16, 12),
-            Spacing = glass ? 10 : 8,
+            Margin = new Thickness(16, 12),
+            Spacing = 8,
             ClipToBounds = false
         };
 
@@ -65,13 +65,15 @@ public sealed class TechStackCardTemplate : TemplateBase, IComponentTemplate
             Height = 14
         });
 
-        titleRow.Children.Add(new TextBlock
+        var titleText = new TextBlock
         {
             Text = "Tech Stack",
             FontSize = 14,
             FontWeight = FontWeight.SemiBold,
             Foreground = glass ? TryGetBrush("GlassTextPrimary") : TryGetBrush("TextPrimary")
-        });
+        };
+        ApplyTextOverride(titleText, GetOverride(config, "title_text"));
+        titleRow.Children.Add(titleText);
 
         contentStack.Children.Add(titleRow);
 
@@ -82,8 +84,7 @@ public sealed class TechStackCardTemplate : TemplateBase, IComponentTemplate
             ItemsPanel = new FuncTemplate<Panel?>(() =>
                 new WrapPanel
                 {
-                    // Glass 间距 10，Fluent 间距 8（和旧 AXAML 一致）
-                    ItemSpacing = glass ? 10 : 8,
+                    ItemSpacing = 8,
                     ClipToBounds = false
                 }),
             ItemTemplate = new FuncDataTemplate<TechStackItem>((item, _) =>
@@ -124,6 +125,7 @@ public sealed class TechStackCardTemplate : TemplateBase, IComponentTemplate
             }, supportsRecycling: true)
         };
         techItems.Bind(ItemsControl.ItemsSourceProperty, new Binding("TechStack"));
+        ApplyControlOverride(techItems, GetOverride(config, "tech_list"));
         contentStack.Children.Add(techItems);
 
         // 分割线
@@ -133,6 +135,7 @@ public sealed class TechStackCardTemplate : TemplateBase, IComponentTemplate
             Margin = new Thickness(0, 2, 0, 0),
             Background = glass ? ParseBrush("#15FFFFFF") : TryGetBrush("SeparatorLight")
         };
+        ApplyBorderOverride(separator, GetOverride(config, "separator"));
         contentStack.Children.Add(separator);
 
         // 链接列表
@@ -168,6 +171,7 @@ public sealed class TechStackCardTemplate : TemplateBase, IComponentTemplate
             }, supportsRecycling: true)
         };
         linksItems.Bind(ItemsControl.ItemsSourceProperty, new Binding("Links"));
+        ApplyControlOverride(linksItems, GetOverride(config, "links_list"));
         contentStack.Children.Add(linksItems);
 
         return contentStack;

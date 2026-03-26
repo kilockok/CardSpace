@@ -23,7 +23,7 @@ public sealed class MapCardTemplate : TemplateBase, IComponentTemplate
     {
         var glass = IsGlass(currentStyle);
 
-        var contentGrid = BuildContentGrid(viewModel, glass);
+        var contentGrid = BuildContentGrid(config, viewModel, glass);
 
         var outerBorder = glass
             ? BuildGlassShell("MapCard", contentGrid, clipContent: true)
@@ -38,41 +38,53 @@ public sealed class MapCardTemplate : TemplateBase, IComponentTemplate
         // 热加载时由 LayoutEngine 重建
     }
 
-    private Grid BuildContentGrid(MainViewModel viewModel, bool glass)
+    private Grid BuildContentGrid(ComponentConfig config, MainViewModel viewModel, bool glass)
     {
-        var contentGrid = new Grid();
+        var contentGrid = new Grid
+        {
+            RowDefinitions = new RowDefinitions("*,Auto")
+        };
 
-        // 地图背景
-        contentGrid.Children.Add(new Border
+        var mapHost = new Border
+        {
+            CornerRadius = new CornerRadius(glass ? 10 : 8, glass ? 10 : 8, 0, 0),
+            ClipToBounds = true
+        };
+        var mapPanel = new Panel();
+        mapPanel.Children.Add(new Border
         {
             Background = glass ? TryGetBrush("GlassMapGradient") : TryGetBrush("MapGradientBrush")
         });
 
         // 地图图片
-        contentGrid.Children.Add(new Image
+        var mapImage = new Image
         {
             Source = LoadImage(viewModel.MapImage),
             Stretch = Stretch.UniformToFill
-        });
+        };
+        ApplyImageOverride(mapImage, GetOverride(config, "map_image"));
+        mapPanel.Children.Add(mapImage);
+        mapHost.Child = mapPanel;
+        Grid.SetRow(mapHost, 0);
+        contentGrid.Children.Add(mapHost);
 
-        // 底部信息叠加层
+        // 底部信息区
         var overlayBorder = new Border
         {
-            VerticalAlignment = VerticalAlignment.Bottom,
             Padding = glass ? new Thickness(24, 16) : new Thickness(20, 14)
         };
 
         if (glass)
         {
-            overlayBorder.Background = TryGetBrush("GlassMapOverlayGradient");
+            overlayBorder.Background = ParseBrush("#B0000000");
         }
         else
         {
             overlayBorder.Background = TryGetBrush("MapOverlayBackground");
             overlayBorder.BorderBrush = TryGetBrush("MapOverlayBorder");
             overlayBorder.BorderThickness = new Thickness(0, 1, 0, 0);
-            overlayBorder.CornerRadius = new CornerRadius(0, 0, 8, 8);
         }
+        ApplyBorderOverride(overlayBorder, GetOverride(config, "overlay_block"));
 
         var infoStack = new StackPanel { Spacing = glass ? 6 : 4 };
 
@@ -98,6 +110,7 @@ public sealed class MapCardTemplate : TemplateBase, IComponentTemplate
             Foreground = glass ? TryGetBrush("GlassTextPrimary") : TryGetBrush("TextPrimary")
         };
         cityText.Bind(TextBlock.TextProperty, new Binding("City"));
+        ApplyTextOverride(cityText, GetOverride(config, "city_text"));
         cityRow.Children.Add(cityText);
         infoStack.Children.Add(cityRow);
 
@@ -109,9 +122,11 @@ public sealed class MapCardTemplate : TemplateBase, IComponentTemplate
             Margin = new Thickness(26, 0, 0, 0)
         };
         descText.Bind(TextBlock.TextProperty, new Binding("LocationDescription"));
+        ApplyTextOverride(descText, GetOverride(config, "description_text"));
         infoStack.Children.Add(descText);
 
         overlayBorder.Child = infoStack;
+        Grid.SetRow(overlayBorder, 1);
         contentGrid.Children.Add(overlayBorder);
 
         return contentGrid;

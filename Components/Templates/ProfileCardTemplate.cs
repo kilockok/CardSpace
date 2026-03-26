@@ -53,12 +53,15 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
                 ? TryGetBrush("GlassCoverGradient")
                 : TryGetBrush("CoverGradientBrush")
         });
-        coverPanel.Children.Add(new Image
+        var coverImage = new Image
         {
             Source = LoadImage(viewModel.CoverImage),
             Stretch = Stretch.UniformToFill
-        });
+        };
+        ApplyImageOverride(coverImage, GetOverride(config, "cover_image"));
+        coverPanel.Children.Add(coverImage);
         coverBorder.Child = coverPanel;
+        ApplyBorderOverride(coverBorder, GetOverride(config, "cover_block"));
         Grid.SetRow(coverBorder, 0);
         grid.Children.Add(coverBorder);
 
@@ -67,11 +70,19 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
         {
             var avatarSize = glass ? 90.0 : 96.0;
             var avatarRadius = avatarSize / 2;
+            var avatarOverride = GetOverride(config, "avatar_image");
+            if (!string.IsNullOrWhiteSpace(avatarOverride?.ImageSource))
+            {
+                var overrideAvatarSource = LoadImage(avatarOverride.ImageSource);
+                if (overrideAvatarSource != null)
+                    avatarSource = overrideAvatarSource;
+            }
 
             var avatarBorder = new Border
             {
                 Width = avatarSize,
                 Height = avatarSize,
+                ZIndex = 1,
                 CornerRadius = new CornerRadius(avatarRadius),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(0, -avatarRadius, 0, 0),
@@ -80,10 +91,12 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
                     ? TryGetBrush("GlassAvatarBorder")
                     : TryGetBrush("AvatarBorder"),
                 ClipToBounds = true,
-                Child = new Image
+                Background = new ImageBrush
                 {
-                    Source = avatarSource,
-                    Stretch = Stretch.UniformToFill
+                    Source = (IImageBrushSource)avatarSource,
+                    Stretch = Stretch.UniformToFill,
+                    AlignmentX = AlignmentX.Center,
+                    AlignmentY = AlignmentY.Top
                 }
             };
 
@@ -99,6 +112,7 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
                 };
             }
 
+            ApplyBorderOverride(avatarBorder, GetOverride(config, "avatar_block"));
             Grid.SetRow(avatarBorder, 1);
             grid.Children.Add(avatarBorder);
         }
@@ -169,6 +183,7 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
             }, supportsRecycling: true)
         };
         tagsControl.Bind(ItemsControl.ItemsSourceProperty, new Binding("Tags"));
+        ApplyControlOverride(tagsControl, GetOverride(config, "tags_list"));
         contentStack.Children.Add(tagsControl);
 
         var separator = new Border
@@ -179,6 +194,7 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
                 ? ParseBrush("#15FFFFFF")
                 : TryGetBrush("Separator")
         };
+        ApplyBorderOverride(separator, GetOverride(config, "separator"));
         contentStack.Children.Add(separator);
 
         var sigText = new TextBlock
@@ -210,6 +226,7 @@ public sealed class ProfileCardTemplate : TemplateBase, IComponentTemplate
         ghButton.Click += OnSocialButtonClick;
         socialStack.Children.Add(ghButton);
 
+        ApplyControlOverride(socialStack, GetOverride(config, "social_row"));
         contentStack.Children.Add(socialStack);
 
         Grid.SetRow(contentStack, 2);

@@ -43,6 +43,7 @@ public sealed class StyleManager : IStyleManager
 
         var oldStyle = CurrentStyle;
         var isGlass = string.Equals(style, "glass", StringComparison.OrdinalIgnoreCase);
+        var normalizedTheme = NormalizeTheme(theme);
 
         // 移除旧的风格资源
         if (_currentStyleResource != null)
@@ -68,7 +69,7 @@ public sealed class StyleManager : IStyleManager
         }
         else
         {
-            var isDark = string.Equals(theme, "dark", StringComparison.OrdinalIgnoreCase);
+            var isDark = string.Equals(normalizedTheme, "dark", StringComparison.OrdinalIgnoreCase);
             app.RequestedThemeVariant = isDark ? ThemeVariant.Dark : ThemeVariant.Light;
             CurrentTheme = isDark ? "dark" : "light";
         }
@@ -100,5 +101,12 @@ public sealed class StyleManager : IStyleManager
         {
             return null;
         }
+    }
+
+    private static string NormalizeTheme(string? theme)
+    {
+        return string.Equals(theme, "black", StringComparison.OrdinalIgnoreCase)
+            ? "dark"
+            : theme ?? "light";
     }
 }

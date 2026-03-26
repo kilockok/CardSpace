@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -9,18 +10,23 @@ using PersonalCardDemo.Helpers;
 
 namespace PersonalCardDemo.Components.Templates;
 
-/// <summary>
-/// 模板基类 - 提供通用的控件构建、属性覆写、卡片外壳构建
-/// </summary>
 public abstract class TemplateBase
 {
-    // -- 资源查找（委托到 ResourceHelper） --
+    private static readonly string[] SupportedImageExtensions =
+    [
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".webp",
+        ".bmp",
+        ".gif",
+        ".tiff",
+        ".tif"
+    ];
 
     protected static IBrush? TryGetBrush(string key) => ResourceHelper.FindBrush(key);
     protected static StreamGeometry? TryGetIcon(string key) => ResourceHelper.FindIcon(key);
     protected static SolidColorBrush? ParseBrush(string colorStr) => ResourceHelper.ParseBrush(colorStr);
-
-    // -- 覆写 --
 
     protected static ElementOverride? GetOverride(ComponentConfig config, string elementName)
     {
@@ -28,11 +34,29 @@ public abstract class TemplateBase
         return config.Overrides.GetValueOrDefault(elementName);
     }
 
-    /// <summary>
-    /// 应用文本元素的覆写属性
-    /// </summary>
+    protected static void ApplyControlOverride(Control control, ElementOverride? ov)
+    {
+        if (ov == null) return;
+
+        if (ov.Width.HasValue)
+            control.Width = ov.Width.Value;
+
+        if (ov.Height.HasValue)
+            control.Height = ov.Height.Value;
+
+        if (ov.Visible.HasValue)
+            control.IsVisible = ov.Visible.Value;
+
+        if (ov.Opacity.HasValue)
+            control.Opacity = ov.Opacity.Value;
+
+        if (ov.Margin != null)
+            control.Margin = ParseThickness(ov.Margin);
+    }
+
     protected static void ApplyTextOverride(TextBlock textBlock, ElementOverride? ov)
     {
+        ApplyControlOverride(textBlock, ov);
         if (ov == null) return;
 
         if (ov.FontSize.HasValue)
@@ -47,28 +71,14 @@ public abstract class TemplateBase
         if (ov.Foreground != null)
             textBlock.Foreground = ParseBrush(ov.Foreground);
 
-        if (ov.Visible.HasValue)
-            textBlock.IsVisible = ov.Visible.Value;
-
-        if (ov.Opacity.HasValue)
-            textBlock.Opacity = ov.Opacity.Value;
-
         if (ov.Text != null)
             textBlock.Text = ov.Text;
     }
 
-    /// <summary>
-    /// 应用 Border 元素的覆写属性
-    /// </summary>
     protected static void ApplyBorderOverride(Border border, ElementOverride? ov)
     {
+        ApplyControlOverride(border, ov);
         if (ov == null) return;
-
-        if (ov.Width.HasValue)
-            border.Width = ov.Width.Value;
-
-        if (ov.Height.HasValue)
-            border.Height = ov.Height.Value;
 
         if (ov.CornerRadius.HasValue)
             border.CornerRadius = new CornerRadius(ov.CornerRadius.Value);
@@ -76,44 +86,42 @@ public abstract class TemplateBase
         if (ov.Background != null)
             border.Background = ParseBrush(ov.Background);
 
-        if (ov.Visible.HasValue)
-            border.IsVisible = ov.Visible.Value;
-
-        if (ov.Opacity.HasValue)
-            border.Opacity = ov.Opacity.Value;
-
-        if (ov.Margin != null)
-            border.Margin = ParseThickness(ov.Margin);
+        if (ov.Padding != null)
+            border.Padding = ParseThickness(ov.Padding);
     }
 
-    // -- 卡片外壳构建（通用实现，子类不再重复） --
+    protected static void ApplyImageOverride(Image image, ElementOverride? ov)
+    {
+        ApplyControlOverride(image, ov);
+        if (ov == null || string.IsNullOrWhiteSpace(ov.ImageSource))
+            return;
 
-    /// <summary>
-    /// Fluent 卡片外壳
-    /// 视觉层（背景/边框/圆角/阴影）和内容层分离，避免 CornerRadius 裁切 scale 动画
-    /// clipContent=true 时内容层也裁切（地图等全出血图片需要）
-    /// </summary>
+        var overrideSource = LoadImage(ov.ImageSource);
+        if (overrideSource != null)
+            image.Source = overrideSource;
+    }
+
     protected static Panel BuildFluentShell(string name, Control content, bool clipContent = false)
     {
         var root = new Panel { Name = name };
 
-        // 底层：视觉装饰（背景、边框、圆角、阴影）
         var decorBorder = new Border
         {
             Classes = { "fluent-card" },
             IsHitTestVisible = false,
             Effect = new DropShadowEffect
             {
-                OffsetX = 0, OffsetY = 2, BlurRadius = 8,
-                Color = Colors.Black, Opacity = 0.06
+                OffsetX = 0,
+                OffsetY = 2,
+                BlurRadius = 8,
+                Color = Colors.Black,
+                Opacity = 0.06
             }
         };
         root.Children.Add(decorBorder);
 
-        // 上层：内容，不受圆角裁切
         if (clipContent)
         {
-            // 全出血内容需要裁切（如地图图片）
             var clipBorder = new Border
             {
                 CornerRadius = new CornerRadius(8),
@@ -130,11 +138,6 @@ public abstract class TemplateBase
         return root;
     }
 
-    /// <summary>
-    /// Glass 卡片外壳
-    /// 视觉层（亚克力/背景/边框/圆角/阴影）和内容层分离，避免 CornerRadius 裁切 scale 动画
-    /// clipContent=true 时内容层也裁切（地图等全出血图片需要）
-    /// </summary>
     protected static Panel BuildGlassShell(string name, Control content, bool clipContent = false)
     {
         var root = new Panel
@@ -143,7 +146,6 @@ public abstract class TemplateBase
             Classes = { "glass-card" }
         };
 
-        // 底层：亚克力 + 视觉装饰，用 ClipToBounds 裁切圆角溢出
         var decorBorder = new Border
         {
             CornerRadius = new CornerRadius(10),
@@ -170,12 +172,14 @@ public abstract class TemplateBase
         decorBorder.Child = decorPanel;
         decorBorder.Effect = new DropShadowEffect
         {
-            OffsetX = 0, OffsetY = 8, BlurRadius = 16,
-            Color = Colors.Black, Opacity = 0.10
+            OffsetX = 0,
+            OffsetY = 8,
+            BlurRadius = 16,
+            Color = Colors.Black,
+            Opacity = 0.10
         };
         root.Children.Add(decorBorder);
 
-        // 上层：内容
         if (clipContent)
         {
             var clipBorder = new Border
@@ -194,42 +198,25 @@ public abstract class TemplateBase
         return root;
     }
 
-    // -- 资源加载 --
-
-    /// <summary>
-    /// 从文件系统加载图片，路径相对于 exe 所在目录
-    /// 使用字节流加载，不锁定文件，支持热替换
-    /// </summary>
     protected static IImage? LoadImage(string relativePath, string? fallbackAvares = null)
     {
-        var basePath = AppContext.BaseDirectory;
-        var fullPath = System.IO.Path.Combine(basePath, relativePath);
+        var fullPath = ResolveImagePath(relativePath);
+        if (string.IsNullOrWhiteSpace(fullPath))
+            return null;
 
-        if (System.IO.File.Exists(fullPath))
+        try
         {
-            try
-            {
-                // 读取字节流后立即释放文件句柄，避免锁定文件
-                var bytes = System.IO.File.ReadAllBytes(fullPath);
-                using var stream = new System.IO.MemoryStream(bytes);
-                return new Bitmap(stream);
-            }
-            catch
-            {
-                System.Diagnostics.Debug.WriteLine($"[LoadImage] 文件损坏或格式不支持: {fullPath}");
-            }
+            var bytes = File.ReadAllBytes(fullPath);
+            using var stream = new MemoryStream(bytes);
+            return new Bitmap(stream);
         }
-        else
+        catch
         {
-            System.Diagnostics.Debug.WriteLine($"[LoadImage] 文件不存在: {fullPath}，请检查 Assets 文件夹是否在 exe 同级目录");
+            System.Diagnostics.Debug.WriteLine($"[LoadImage] 文件损坏或格式不支持: {fullPath}");
+            return null;
         }
-
-        return null;
     }
 
-    /// <summary>
-    /// 加载 avares:// 协议的嵌入图片资源
-    /// </summary>
     protected static IImage? LoadAvaloniaResource(string uri)
     {
         try
@@ -242,7 +229,73 @@ public abstract class TemplateBase
         }
     }
 
-    // -- 解析工具 --
+    private static string? ResolveImagePath(string relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return null;
+
+        var fullPath = Path.IsPathRooted(relativePath)
+            ? relativePath
+            : Path.Combine(AppContext.BaseDirectory, relativePath);
+
+        var resolvedPath = FindCompatibleImagePath(fullPath);
+        if (!string.IsNullOrWhiteSpace(resolvedPath))
+            return resolvedPath;
+
+        System.Diagnostics.Debug.WriteLine($"[LoadImage] 文件不存在: {fullPath}");
+        return null;
+    }
+
+    private static string? FindCompatibleImagePath(string path)
+    {
+        if (File.Exists(path))
+            return path;
+
+        var directory = Path.GetDirectoryName(path);
+        if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
+            return null;
+
+        var stem = Path.GetFileNameWithoutExtension(path);
+        if (string.IsNullOrWhiteSpace(stem))
+            return null;
+
+        foreach (var extension in GetExtensionSearchOrder(Path.GetExtension(path)))
+        {
+            var candidate = FindCaseInsensitiveFile(directory, stem + extension);
+            if (candidate == null)
+                continue;
+
+            System.Diagnostics.Debug.WriteLine($"[LoadImage] 使用兼容图片: {path} -> {candidate}");
+            return candidate;
+        }
+
+        return null;
+    }
+
+    private static IEnumerable<string> GetExtensionSearchOrder(string configuredExtension)
+    {
+        if (!string.IsNullOrWhiteSpace(configuredExtension))
+            yield return configuredExtension;
+
+        foreach (var extension in SupportedImageExtensions)
+        {
+            if (string.Equals(extension, configuredExtension, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            yield return extension;
+        }
+    }
+
+    private static string? FindCaseInsensitiveFile(string directory, string fileName)
+    {
+        foreach (var candidate in Directory.EnumerateFiles(directory))
+        {
+            if (string.Equals(Path.GetFileName(candidate), fileName, StringComparison.OrdinalIgnoreCase))
+                return candidate;
+        }
+
+        return null;
+    }
 
     protected static Thickness ParseThickness(string value)
     {

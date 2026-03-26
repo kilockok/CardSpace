@@ -96,7 +96,7 @@
       <SolidColorBrush x:Key="MapOverlayBackground" Color="#252525"/>
       <SolidColorBrush x:Key="MapOverlayBorder" Color="#3A3A3A"/>
       <SolidColorBrush x:Key="QuoteBorder" Color="#3A4A5A"/>
-      <SolidColorBrush x:Key="AvatarBorder" Color="#2A2A2A"/>
+      <SolidColorBrush x:Key="AvatarBorder" Color="#1C1C1C"/>
       <LinearGradientBrush x:Key="CoverGradientBrush" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#003D73" Offset="0"/>
         <GradientStop Color="#004E8C" Offset="0.3"/>

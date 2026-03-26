@@ -19,7 +19,7 @@ public sealed class ConfigValidator
     // 允许的主题值
     private static readonly HashSet<string> ValidThemes = new(StringComparer.OrdinalIgnoreCase)
     {
-        "light", "dark"
+        "light", "dark", "black"
     };
 
     /// <summary>
@@ -30,11 +30,27 @@ public sealed class ConfigValidator
         // 根节点为 null 时直接返回全默认
         config ??= new AppConfig();
 
+        config.Window ??= new WindowConfig();
+        config.Layout ??= new LayoutConfig();
+        config.Profile ??= new ProfileConfig();
+        config.Location ??= new LocationConfig();
+        config.Social ??= new SocialConfig();
+        config.TechStack ??= [];
+        config.Links ??= [];
+        config.Philosophy ??= new PhilosophyConfig();
+        config.Components ??= [];
+
         ValidateStyleAndTheme(config);
         ValidateWindow(config.Window);
         ValidateLayout(config.Layout);
+        if (config.LayoutGlass != null)
+            ValidateLayout(config.LayoutGlass);
         ValidateComponents(config.Components);
         ValidateProfile(config.Profile);
+        ValidateLocation(config.Location);
+        ValidateSocial(config.Social);
+        ValidateTechStack(config.TechStack);
+        ValidateLinks(config.Links);
         ValidatePhilosophy(config.Philosophy);
 
         return config;
@@ -45,8 +61,17 @@ public sealed class ConfigValidator
         if (!ValidStyles.Contains(config.Style))
             config.Style = "fluent";
 
-        if (!ValidThemes.Contains(config.Theme))
-            config.Theme = "light";
+        config.Theme = NormalizeTheme(config.Theme);
+    }
+
+    private static string NormalizeTheme(string? theme)
+    {
+        if (string.IsNullOrWhiteSpace(theme) || !ValidThemes.Contains(theme))
+            return "light";
+
+        return string.Equals(theme, "black", StringComparison.OrdinalIgnoreCase)
+            ? "dark"
+            : theme.ToLowerInvariant();
     }
 
     private static void ValidateWindow(WindowConfig window)
@@ -80,6 +105,8 @@ public sealed class ConfigValidator
 
         foreach (var comp in components)
         {
+            comp.Name ??= string.Empty;
+
             if (string.IsNullOrWhiteSpace(comp.Type))
                 comp.Type = comp.Name;
 
@@ -96,12 +123,70 @@ public sealed class ConfigValidator
     {
         if (string.IsNullOrWhiteSpace(profile.Name))
             profile.Name = "User";
+
+        profile.Id ??= string.Empty;
+        profile.Signature ??= string.Empty;
+        profile.Tags ??= [];
+
+        if (string.IsNullOrWhiteSpace(profile.CoverImage))
+            profile.CoverImage = "Assets/cover.jpg";
+
+        if (string.IsNullOrWhiteSpace(profile.AvatarImage))
+            profile.AvatarImage = "Assets/avatar.png";
+    }
+
+    private static void ValidateLocation(LocationConfig location)
+    {
+        location.City ??= string.Empty;
+        location.Description ??= string.Empty;
+
+        if (string.IsNullOrWhiteSpace(location.MapImage))
+            location.MapImage = "Assets/map.png";
+    }
+
+    private static void ValidateSocial(SocialConfig social)
+    {
+        social.X ??= string.Empty;
+        social.GitHub ??= string.Empty;
+    }
+
+    private static void ValidateTechStack(List<TechStackItem> techStack)
+    {
+        if (techStack == null) return;
+
+        foreach (var item in techStack)
+        {
+            if (string.IsNullOrWhiteSpace(item.Name))
+                item.Name = "Tech";
+
+            if (string.IsNullOrWhiteSpace(item.Icon))
+                item.Icon = "CodeIcon";
+
+            if (string.IsNullOrWhiteSpace(item.Color))
+                item.Color = "#808080";
+        }
+    }
+
+    private static void ValidateLinks(List<LinkItem> links)
+    {
+        if (links == null) return;
+
+        foreach (var item in links)
+        {
+            if (string.IsNullOrWhiteSpace(item.Icon))
+                item.Icon = "CodeIcon";
+
+            item.Text ??= string.Empty;
+        }
     }
 
     private static void ValidatePhilosophy(PhilosophyConfig philosophy)
     {
         if (string.IsNullOrWhiteSpace(philosophy.Title))
             philosophy.Title = "Our Philosophy";
+
+        philosophy.Quotes ??= [];
+        philosophy.Attribution ??= string.Empty;
     }
 
     /// <summary>

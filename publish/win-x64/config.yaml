@@ -1,19 +1,19 @@
-# === 窗口配置 ===
+# 主配置文件。保存后会自动热更新，替换 Assets 下图片也会刷新。
+
+# 窗口设置。宽高建议控制在 400-4000 之间。
 window:
   width: 960
   height: 680
-  can_resize: false
+  can_resize: false # true / false
   title: "个人主页"
 
-# === 风格配置 ===
-# fluent: Windows 风格，支持亮/暗主题
-# glass: 液态玻璃风格，固定暗色
-style: fluent
+# 风格：fluent / glass
+style: "fluent"
+# 主题：light / dark / black；glass 下会自动按暗色处理
+theme: "dark"
 
-# === 主题（仅 fluent 生效）===
-theme: black
-
-# === 布局配置（Fluent 风格） ===
+# 主布局。columns / rows 是 Avalonia 的 Grid 写法。
+# margin 支持 1、2、4 个值，例如 "24" 或 "20,8,20,20"
 layout:
   columns: "300,*"
   rows: "*,210"
@@ -21,82 +21,77 @@ layout:
   row_spacing: 16
   margin: "20,8,20,20"
 
-# === 布局配置（Glass 风格覆写） ===
+# glass 风格专用布局；不写时会复用上面的 layout
 layout_glass:
   columns: "300,*"
-  rows: "*,200"
+  rows: "*,210"
   column_spacing: 24
   row_spacing: 24
   margin: "24"
 
-# === 个人信息 ===
+# 个人资料。图片路径支持相对路径、绝对路径，也支持同名多格式自动匹配。
 profile:
-  name: "Kilock"
-  id: "@kilock_1208"
-  signature: "清凤凤凤凤凤!"
-  tags:
-    - "Dev"
-    - "INTP"
-    - "Mtx"
-  # 图片路径（相对于 exe 所在目录，或绝对路径）
-  # 默认位于 exe 同级的 Assets 文件夹下
-  # 可自行替换图片文件，保持文件名一致即可
-  #   - Assets/cover.jpg   封面背景图
-  #   - Assets/avatar.png  头像图片
+  name: "清凤"
+  id: "@qqqqqf_"
+  signature: "创作 Arkloop 中"
+  tags: ["Dev", "ENTP", "MtF"]
   cover_image: "Assets/cover.jpg"
   avatar_image: "Assets/avatar.png"
 
-# === 地理位置 ===
 location:
   city: "浙江 · 宁波"
-  description: "qwqwqwq!"
-  # 地图图片路径
-  #   - Assets/map.png    地图图片
+  description: "欢迎找我玩！"
   map_image: "Assets/map.png"
 
-# === 社交链接 ===
+# 顶部社交按钮点击后打开的地址
 social:
-  x: "https://x.com/kilock_1208"
-  github: "https://github.com/kilockok"
+  x: "https://x.com/qqqqqf_"
+  github: "https://github.com/qqqqqf-q"
 
-# === 技术栈 ===
+# 技术栈。icon 填 Icons.axaml 里的键名，color 建议写 #RRGGBB。
 tech_stack:
-  - name: "C++"
-    icon: "CppIcon"
-    color: "#00599C"
   - name: "Python"
     icon: "PythonIcon"
     color: "#3776AB"
-  - name: "HTML5"
-    icon: "Html5Icon"
-    color: "#E34F26"
-  - name: "Vue"
-    icon: "VueIcon"
-    color: "#42B883"
-  - name: "Node.js"
-    icon: "NodeJsIcon"
-    color: "#339933"
+  - name: "Rust"
+    icon: "RustIcon"
+    color: "#CE422B"
+  - name: "TypeScript"
+    icon: "TsIcon"
+    color: "#3178C6"
+  - name: "JavaScript"
+    icon: "JsIcon"
+    color: "#F7DF1E"
+  - name: "Go"
+    icon: "GoIcon"
+    color: "#00ADD8"
+  - name: "Git"
+    icon: "GitIcon"
+    color: "#F05032"
   - name: "Docker"
     icon: "DockerIcon"
     color: "#2496ED"
 
-# === 链接 ===
+
 links:
   - icon: "GitHubIcon"
-    text: "github.com/kilockok"
+    text: "github.com/qqqqqf-q"
   - icon: "BlogIcon"
     text: "清凤.fun"
 
-# === 理念 ===
 philosophy:
   title: "Our Philosophy"
   quotes:
-    - "活下去，去做更多、更优秀的作品"
-  attribution: "以及陪着清凤"
+    - "要有最朴实的生活和最遥远的梦想，即使明天天寒地冻、山高水远、路远马亡。"
+    - "Never say never, because limits, like fears, are often just an illusion."
+  attribution: "Just Do It --With World"
 
-# === 组件声明 ===
-# 每个组件对应一个预定义模板，通过 type 引用
-# 支持 Grid 布局参数、可见性、z-index、元素属性覆写
+# 组件布局。grid_row / grid_column 从 0 开始，span 至少为 1。
+# z_index 越大越靠前。
+# overrides 里常见可改项：
+# 文本：font_size、font_weight、font_style、foreground、text、visible、opacity
+# 容器：width、height、margin、padding、corner_radius、background、visible、opacity
+# 图片：image_source、visible、opacity
 components:
   - name: "profile_card"
     type: "profile_card"
@@ -107,14 +102,37 @@ components:
     visible: true
     z_index: 0
     overrides:
+      cover_block:
+        corner_radius: 10
+        opacity: 1
+      cover_image:
+        image_source: "Assets/cover.jpg"
+        opacity: 1
+      avatar_block:
+        width: 96
+        height: 96
+        margin: "0,-48,0,0"
+      avatar_image:
+        image_source: "Assets/avatar.png"
+        visible: true
       name_text:
         font_size: 22
         font_weight: "SemiBold"
       id_text:
         font_size: 13
+        foreground: "#A0A0A0"
+      tags_list:
+        visible: true
+        opacity: 1
+      separator:
+        visible: true
+        opacity: 1
       signature_text:
         font_size: 13
         font_style: "Italic"
+      social_row:
+        visible: true
+        opacity: 1
 
   - name: "map_card"
     type: "map_card"
@@ -122,6 +140,19 @@ components:
     grid_column: 1
     visible: true
     z_index: 0
+    overrides:
+      map_image:
+        image_source: "Assets/map.png"
+        opacity: 1
+      overlay_block:
+        padding: "20,14"
+        opacity: 1
+      city_text:
+        font_size: 16
+        font_weight: "SemiBold"
+      description_text:
+        font_size: 13
+        visible: true
 
   - name: "tech_card"
     type: "tech_stack_card"
@@ -132,6 +163,19 @@ components:
     sub_columns: "*,*"
     sub_column_spacing: 16
     sub_column: 0
+    overrides:
+      title_text:
+        text: "Tech Stack"
+        font_size: 14
+        font_weight: "SemiBold"
+      tech_list:
+        visible: true
+        opacity: 1
+      separator:
+        visible: true
+      links_list:
+        visible: true
+        opacity: 1
 
   - name: "philosophy_card"
     type: "philosophy_card"
@@ -140,3 +184,19 @@ components:
     visible: true
     z_index: 0
     sub_column: 1
+    overrides:
+      accent_line:
+        width: 32
+        height: 4
+      title_text:
+        font_size: 15
+        font_weight: "SemiBold"
+      quote_block:
+        padding: "12,4,0,4"
+        opacity: 1
+      quote_text:
+        font_size: 12.5
+        foreground: "#D0D0D0"
+      attribution_text:
+        font_size: 12
+        font_style: "Italic"

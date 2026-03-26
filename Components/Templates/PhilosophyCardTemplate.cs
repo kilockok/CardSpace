@@ -49,14 +49,16 @@ public sealed class PhilosophyCardTemplate : TemplateBase, IComponentTemplate
         };
 
         // 蓝色装饰线
-        contentStack.Children.Add(new Border
+        var accentLine = new Border
         {
             Width = 32,
             Height = 4,
             CornerRadius = new CornerRadius(2),
             Background = glass ? TryGetBrush("GlassAccentBrush") : TryGetBrush("AccentBrush"),
             HorizontalAlignment = HorizontalAlignment.Left
-        });
+        };
+        ApplyBorderOverride(accentLine, GetOverride(config, "accent_line"));
+        contentStack.Children.Add(accentLine);
 
         // 标题
         var titleText = new TextBlock
@@ -77,6 +79,7 @@ public sealed class PhilosophyCardTemplate : TemplateBase, IComponentTemplate
             BorderBrush = glass ? ParseBrush("#40FFFFFF") : TryGetBrush("QuoteBorder"),
             Padding = new Thickness(12, 4, 0, 4)
         };
+        ApplyBorderOverride(quoteBorder, GetOverride(config, "quote_block"));
 
         var quoteStack = new StackPanel { Spacing = 6 };
 
