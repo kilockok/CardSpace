@@ -1,122 +1,110 @@
-# CardSpaceDemo
+# PersonalCardDemo
 
-基于 Avalonia UI 的个人主页卡片桌面应用，支持 Fluent / Glass 双风格切换、亮暗主题、配置热加载。
+这是一个个人 Card 生成软件。
 
-## 功能
+你可以把它当成一张能运行的个人介绍卡。改一下名字、头像、封面、地图、技术栈和社交链接，程序就会把这些内容排成一页完整的展示界面。拿来做个人主页展示、作品页配图，或者直接打包发给别人看，都很合适。
 
-- Fluent 风格（Windows 11 设计语言）和 Glass 毛玻璃风格
-- 亮色 / 暗色主题切换（Fluent 模式下）
-- `config.yaml` 热加载，保存即刷新
-- 组件化卡片布局，支持自定义排列
-- 跨平台：Windows / macOS / Linux
+![界面预览](./Assets/readme-preview.png)
 
-## 快速开始
+## 它能做什么
 
-### 从 Release 下载
+- 用一份 `config.yaml` 管理你的个人信息和页面内容
+- 支持 `fluent` 和 `glass` 两套展示风格
+- 名字、签名、标签、地图、技术栈、链接都可以自己配
+- 图片直接放在 `Assets/` 里替换，不用改程序
+- 保存配置后会自动刷新，调起来比较顺手
+- Windows、macOS、Linux 都能运行
 
-下载 `PersonalCardDemo-win-x64.zip`，解压后双击 `PersonalCardDemo.exe` 即可运行，无需安装任何运行时。
+## 适合谁用
 
-### 从源码构建
+- 想做一张本地可运行个人展示页的人
+- 想做一个更完整电子名片的人
+- 想快速换内容、换图片、换风格的人
+- 想把自己的主页打成一个独立程序发给别人看的人
+
+## 怎么开始
+
+### 直接运行
+
+下载 `PersonalCardDemo-win-x64.zip`，解压后直接运行 `PersonalCardDemo.exe` 即可。
+
+### 改成你自己的内容
+
+1. 打开 `config.yaml`
+2. 把名字、签名、标签、链接这些内容换成你自己的
+3. 如果要换图，就替换 `Assets/` 里的图片
+4. 保存后看效果，不满意就继续改
+
+## 配置示例
+
+```yaml
+style: glass
+theme: dark
+
+profile:
+  name: 清风
+  id: "@qqqqqf-q"
+  signature: "创作 Arkloop 中"
+  tags: [Dev, ENTP, MtF]
+  cover_image: "Assets/cover.jpg"
+  avatar_image: "Assets/avatar.png"
+
+location:
+  city: "浙江 · 宁波"
+  description: "欢迎找我玩！"
+  map_image: "Assets/map.png"
+```
+
+完整字段说明见 [`config.yaml`](./config.yaml)。
+
+## 图片怎么换
+
+程序会从 `Assets/` 目录读取图片。最常用的是这三张：
+
+- 封面图：资料卡顶部横幅
+- 头像：显示为圆形头像
+- 地图图：位置卡片背景
+
+
+```text
+Assets/
+  cover.jpg
+  avatar.png
+  map.png
+```
+
+## 技术实现
+
+- 运行时：.NET 8
+- 结构：组件化卡片模板与布局引擎
+- 平台：Windows / macOS / Linux
+
+## 运行与部署
+
+### 本地运行
 
 ```bash
-# 需要 .NET 8.0 SDK
 dotnet run
 ```
 
-### 发布自包含 exe
+### 发布自包含 Windows 可执行文件
 
 ```bash
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o publish/win-x64
 ```
 
-## 配置
-
-编辑 `config.yaml` 自定义个人信息、风格、布局等，保存后自动刷新。
-
-```yaml
-style: fluent          # fluent 或 glass
-theme: light           # light 或 dark（仅 fluent 生效）
-
-profile:
-  name: Kilock
-  id: "@kilock_1208"
-  signature: "清凤凤凤凤凤!"
-  tags: [Dev, INTP, Mtx]
-```
-
-完整配置项见 `config.yaml` 文件。
-
-## 自定义图片
-
-图片资源独立存放于 exe 同级的 `Assets/` 文件夹中，不嵌入 exe 内部，方便直接替换。
-图片加载支持同名多格式自动匹配，常见格式包括 `png`、`jpg`、`jpeg`、`webp`、`bmp`、`gif`、`tiff`、`tif`。
-
-```
-PersonalCardDemo.exe
-config.yaml
-Assets/
-  cover.jpg      # 封面背景图
-  avatar.png     # 头像图片
-  map.png        # 地图图片
-```
-
-| 图片 | 配置路径示例 | 推荐尺寸 | 说明 |
-|------|--------------|----------|------|
-| 封面图 | `Assets/cover.jpg` | 600x200 | 资料卡顶部背景 |
-| 头像 | `Assets/avatar.png` | 200x200 | 圆形裁剪，正方形即可 |
-| 地图截图 | `Assets/map.png` | 600x400 | 右上地图卡背景 |
-
-替换方式：直接用同名文件覆盖 `Assets/` 下对应图片，重启应用生效。若配置中的扩展名对应文件不存在，程序会继续尝试同目录下同名的其他常见图片格式。也可以在 `config.yaml` 中修改路径指向其他文件名或绝对路径：
-
-```yaml
-profile:
-  cover_image: "Assets/cover.jpg"    # 封面背景图
-  avatar_image: "Assets/avatar.png"  # 头像图片
-
-location:
-  map_image: "Assets/map.png"        # 地图图片
-```
-
 ## 项目结构
 
-```
+```text
 PersonalCardDemo/
-  Program.cs                    # 程序入口，DI 容器构建
-  App.axaml / App.axaml.cs      # 应用初始化
-  Views/
-    MainWindow.axaml(.cs)       # 主窗口，标题栏/内容区/动画
-  ViewModels/
-    MainViewModel.cs            # 数据绑定，属性变更通知
-    ViewModelBase.cs            # INPC 基类
-  Components/
-    Templates/                  # 四种卡片模板（Profile/Map/TechStack/Philosophy）
-    ComponentFactory.cs         # 组件工厂
-    ComponentRegistry.cs        # 模板注册表
-  Config/
-    ConfigService.cs            # 配置加载/热加载/文件监听
-    ConfigValidator.cs          # 配置校验
-    ConfigMigrator.cs           # 旧格式迁移
-    Models/                     # 配置数据模型
-  Layout/
-    GridLayoutEngine.cs         # Grid 布局引擎
-  Styles/
-    FluentStyle.axaml           # Fluent 风格资源
-    GlassStyle.axaml            # Glass 风格资源
-    StyleManager.cs             # 风格/主题切换
-  Helpers/
-    ResourceHelper.cs           # 资源查找工具
-  Converters/
-    IconKeyConverter.cs         # 图标/颜色转换器
-  Hosting/
-    ServiceCollectionExtensions.cs  # DI 注册
-  Assets/                       # 图片资源
+  Components/   # 卡片模板
+  Config/       # 配置加载、校验、迁移
+  Layout/       # 布局引擎
+  Styles/       # Fluent / Glass 样式资源
+  ViewModels/   # 数据绑定
+  Views/        # 主窗口与交互
+  Assets/       # 图片资源
 ```
-
-## 平台支持
-
-- Windows
-- macOS
-- Linux
 
 ## License
 
